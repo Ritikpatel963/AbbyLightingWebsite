@@ -18,6 +18,5 @@ yarn-error.log
 /.vscode
 /public/.htaccess
 _ide_helper.php
-bootstrap/app.php
 bootstrap/cache/.gitignore
 composer.lock
