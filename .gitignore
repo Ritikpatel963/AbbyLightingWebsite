@@ -16,7 +16,6 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
-/public/.htaccess
 _ide_helper.php
 bootstrap/cache/.gitignore
 composer.lock
