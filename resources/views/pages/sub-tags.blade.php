@@ -45,6 +45,22 @@
         </a>
 
         @foreach($tags as $index => $tag)
+            @php
+                $hasProducts = false;
+                if(isset($subTags) && count($subTags) > 0) {
+                    foreach($subTags as $subTag) {
+                        if (is_iterable($subTag->tags)) {
+                            foreach($subTag->tags as $t) {
+                                if ($t == $tag->id) {
+                                    $hasProducts = true;
+                                    break 2;
+                                }
+                            }
+                        }
+                    }
+                }
+            @endphp
+            @if($hasProducts)
             <span class="divider text-5b5b5b" style="font-size:1.3rem">|</span>
             <a href="#"
                 class="section-link-filter text-uppercase fw-600 tag-link d-flex flex-column align-items-center"
@@ -53,6 +69,7 @@
                 data-filter=".--t{{$tag->id}}">
                 <span class="tag-display">{!! str_replace(" ", "&nbsp;", $tag->display_name) !!}</span>
             </a>
+            @endif
         @endforeach
     </div>
 </section>

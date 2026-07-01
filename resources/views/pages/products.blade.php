@@ -60,8 +60,24 @@
             <a href="#" class="section-link-filter fs-1-3 fw-600 text-5b5b5b text-decoration-underline me-3"
                 style="white-space: nowrap;letter-spacing:0.1rem" data-filter="*">All</a>
             @foreach($categories as $index => $category)
+                @php
+                    $hasProducts = false;
+                    if(isset($products)) {
+                        foreach($products as $product) {
+                            if (isset($product->category) && $product->category->id == $category->id) {
+                                $hasProducts = true;
+                                break;
+                            } elseif (isset($product->category_id) && $product->category_id == $category->id) {
+                                $hasProducts = true;
+                                break;
+                            }
+                        }
+                    }
+                @endphp
+                @if($hasProducts)
                 <a href="#" class="section-link-filter fs-1-3 fw-600 text-5b5b5b text-decoration-underline me-3" style="white-space: nowrap;letter-spacing:0.1rem"
                     data-filter=".--c{{$category->id}}">{{$category->title}}</a>
+                @endif
             @endforeach
         </div>
         @endif

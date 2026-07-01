@@ -24,65 +24,39 @@
                             <span class="tag-display">All</span>
                         </a>
 
-                        {{-- Divider + Retail --}}
-                        <span class="divider text-5b5b5b" style="font-size:1.3rem">|</span>
-                        <a href="#"
-                        class="section-link-filter text-uppercase fw-600 pb-3"
-                        style="white-space: nowrap; letter-spacing: 0.1rem; margin: 0 2rem;"
-                        data-slug="retail"
-                        data-filter=".--retail">
-                            <span class="tag-display">Retail</span>
-                        </a>
-
-                        {{-- Divider + Office Spaces --}}
-                        <span class="divider text-5b5b5b" style="font-size:1.3rem">|</span>
-                        <a href="#"
-                        class="section-link-filter text-uppercase fw-600 pb-3"
-                        style="white-space: nowrap; letter-spacing: 0.1rem; margin: 0 2rem;"
-                        data-slug="office-spaces"
-                        data-filter=".--office-spaces">
-                            <span class="tag-display">Office&nbsp;Spaces</span>
-                        </a>
-
-                        {{-- Divider + Hospitality --}}
-                        <span class="divider text-5b5b5b" style="font-size:1.3rem">|</span>
-                        <a href="#"
-                        class="section-link-filter text-uppercase fw-600 pb-3"
-                        style="white-space: nowrap; letter-spacing: 0.1rem; margin: 0 2rem;"
-                        data-slug="hospitality"
-                        data-filter=".--hospitality">
-                            <span class="tag-display">Hospitality</span>
-                        </a>
-
-                        {{-- Divider + Residential --}}
-                        <span class="divider text-5b5b5b" style="font-size:1.3rem">|</span>
-                        <a href="#"
-                        class="section-link-filter text-uppercase fw-600 pb-3"
-                        style="white-space: nowrap; letter-spacing: 0.1rem; margin: 0 2rem;"
-                        data-slug="residential"
-                        data-filter=".--residential">
-                            <span class="tag-display">Residential</span>
-                        </a>
-
-                        {{-- Divider + Education --}}
-                        <span class="divider text-5b5b5b" style="font-size:1.3rem">|</span>
-                        <a href="#"
-                        class="section-link-filter text-uppercase fw-600 pb-3"
-                        style="white-space: nowrap; letter-spacing: 0.1rem; margin: 0 2rem;"
-                        data-slug="education"
-                        data-filter=".--education">
-                            <span class="tag-display">Education</span>
-                        </a>
-
-                        {{-- Divider + Public Spaces --}}
-                        <span class="divider text-5b5b5b" style="font-size:1.3rem">|</span>
-                        <a href="#"
-                        class="section-link-filter text-uppercase fw-600 pb-3"
-                        style="white-space: nowrap; letter-spacing: 0.1rem; margin: 0 2rem;"
-                        data-slug="public-spaces"
-                        data-filter=".--public-spaces">
-                            <span class="tag-display">Public&nbsp;Spaces</span>
-                        </a>            
+                        @php
+                            $projectTypes = [
+                                'retail' => ['filter' => '.--retail', 'display' => 'Retail'],
+                                'office-spaces' => ['filter' => '.--office-spaces', 'display' => 'Office&nbsp;Spaces'],
+                                'hospitality' => ['filter' => '.--hospitality', 'display' => 'Hospitality'],
+                                'residential' => ['filter' => '.--residential', 'display' => 'Residential'],
+                                'education' => ['filter' => '.--education', 'display' => 'Education'],
+                                'public-spaces' => ['filter' => '.--public-spaces', 'display' => 'Public&nbsp;Spaces'],
+                            ];
+                        @endphp
+                        @foreach($projectTypes as $slug => $data)
+                            @php
+                                $hasProjects = false;
+                                if(isset($projects)) {
+                                    foreach($projects as $p) {
+                                        if(isset($p->typeSlug) && (trim($p->typeSlug) == trim(str_replace('.', '', $data['filter'])) || trim($p->typeSlug) == trim($slug))) {
+                                            $hasProjects = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                            @endphp
+                            @if($hasProjects)
+                            <span class="divider text-5b5b5b" style="font-size:1.3rem">|</span>
+                            <a href="#"
+                            class="section-link-filter text-uppercase fw-600 pb-3"
+                            style="white-space: nowrap; letter-spacing: 0.1rem; margin: 0 2rem;"
+                            data-slug="{{ $slug }}"
+                            data-filter="{{ $data['filter'] }}">
+                                <span class="tag-display">{!! $data['display'] !!}</span>
+                            </a>
+                            @endif
+                        @endforeach            
                            
                 </div>
             </section> 
