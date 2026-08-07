@@ -362,4 +362,22 @@
 @stop
 @section('extra_js')
 <script src="https://cdn.ckeditor.com/4.14.1/standard/ckeditor.js"></script>
+<script>
+$(document).ready(function() {
+    $('.has-sub > a').on('click', function(e) {
+        e.preventDefault();
+        var parentLi = $(this).parent('li');
+        if (parentLi.hasClass('open')) {
+            parentLi.removeClass('open');
+            parentLi.children('.menu-content').slideUp();
+        } else {
+            parentLi.addClass('open');
+            parentLi.children('.menu-content').slideDown();
+        }
+    });
+
+    // Make sure menu-content is hidden if not open on load
+    $('.has-sub').not('.open').children('.menu-content').hide();
+});
+</script>
 @stop
