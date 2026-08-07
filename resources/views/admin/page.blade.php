@@ -375,9 +375,11 @@ $(document).ready(function() {
             parentLi.children('.menu-content').slideDown();
         }
     });
-
-    // Make sure menu-content is hidden if not open on load
-    $('.has-sub').not('.open').children('.menu-content').hide();
 });
 </script>
+<style>
+/* Hide submenu content by default, only show when parent has open class */
+.navigation-main .has-sub > .menu-content { display: none; }
+.navigation-main .has-sub.open > .menu-content { display: block; }
+</style>
 @stop
