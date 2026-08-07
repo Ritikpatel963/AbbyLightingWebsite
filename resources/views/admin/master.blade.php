@@ -87,6 +87,35 @@
     <!-- BEGIN: Custom CSS-->
     <script src="{{asset('adminlte/js/scripts.js')}}"></script>
     <!-- END: Custom CSS-->
+    <!-- Submenu toggle fix: prevent theme from auto-expanding all submenus -->
+    <script>
+    $(document).ready(function() {
+        // Collapse all submenus that are NOT marked open by the server
+        $('.navigation-main li.has-sub').not('.open').each(function() {
+            $(this).children('ul.menu-content').hide();
+        });
+
+        // Remove any duplicate click handlers and bind our own clean one
+        $('.navigation-main').off('click.app.menu', 'li');
+        $(document).off('click', '.has-sub > a');
+
+        // Bind clean toggle on the anchor inside has-sub
+        $(document).on('click', '.navigation-main li.has-sub > a', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var $li = $(this).parent();
+            if ($li.hasClass('open')) {
+                $li.removeClass('open');
+                $li.children('ul.menu-content').slideUp(300);
+            } else {
+                // Close siblings first
+                $li.siblings('.open').removeClass('open').children('ul.menu-content').slideUp(300);
+                $li.addClass('open');
+                $li.children('ul.menu-content').slideDown(300);
+            }
+        });
+    });
+    </script>
     @yield('extra_js')
     <script type="text/javascript">
         var siteUrl= "{{url('/admin')}}";
