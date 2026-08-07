@@ -1,0 +1,272 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\DecorativeProduct;
+use App\Models\DecorativeProductImage;
+use App\Helpers\Common_function;
+use DataTables;
+use Illuminate\Support\Str;
+
+class DecorativeProductAdminController extends Controller
+{
+    public function __construct()
+    {
+        $this->main_module = 'Decorative Product';
+    }
+
+    public function index(Request $request)
+    {
+        $data = array('title' => "Decorative Products", 'main_module' => $this->main_module);
+        return view('admin.decorative-products.index', $data);
+    }
+
+    public function list(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = DecorativeProduct::latest()->get();
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->setRowId(function ($row) {
+                    return 'data-' . $row->id;
+                })
+                ->addColumn('title', function ($row) {
+                    return $row->title;
+                })
+                ->addColumn('sku', function ($row) {
+                    return $row->sku;
+                })
+                ->addColumn('status', function ($row) {
+                    $temp_status = $row->status == 'active' ? "Checked" : "";
+                    return '<div class="custom-control custom-switch text-center">
+                                <input type="checkbox" class="custom-control-input knob switch" id="customSwitch' . $row->id . '" ' . $temp_status . '>
+                                <label class="custom-control-label" for="customSwitch' . $row->id . '"></label>
+                            </div>';
+                })
+                ->addColumn('action', function ($row) {
+                    $actions_html = '<div class="text-center list-action actBtn-td">
+                                        <a href="' . route('decorative_product_admin.edit', $row->id) . '" class="mx-1" data-toggle="tooltip" title="Edit">
+                                            <i class="ft-edit-2 font-medium-3 mr-2"></i>
+                                        </a>
+                                        <a href="javascript:;" class="delete mx-1" data-toggle="tooltip" title="Delete" data-id="' . $row->id . '">
+                                            <i class="ft-trash-2 font-medium-3 mr-2 text-danger"></i>
+                                        </a>
+                                    </div>';
+                    return $actions_html;
+                })
+                ->rawColumns(['status', 'action'])
+                ->make(true);
+        }
+    }
+
+    public function add()
+    {
+        $data = [
+            'title' => "Add Decorative Product",
+            'main_module' => $this->main_module,
+            'method' => 'Add',
+            'action' => route('decorative_product_admin.insert'),
+            'global_attributes' => \App\Models\DecorativeAttribute::with('values')->get(),
+            'categories' => \App\Models\DecorativeCategory::with('parent')->orderBy('name', 'asc')->get()
+        ];
+        return view('admin.decorative-products.add', $data);
+    }
+
+    public function insert(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'sku' => 'required|string|unique:decorative_products,sku',
+        ]);
+
+        $product = DecorativeProduct::create([
+            'title' => $request->title,
+            'sku' => $request->sku,
+            'slug' => Str::slug($request->title . '-' . $request->sku),
+            'short_description' => $request->short_description,
+            'description' => $request->description,
+            'status' => $request->status ?? 'active',
+            'sort_order' => $request->sort_order ?? 0,
+        ]);
+
+        $this->saveRelations($request, $product);
+
+        return redirect()->route('decorative_product_admin')->with('success', 'Product added successfully.');
+    }
+
+    public function edit($id)
+    {
+        $product = DecorativeProduct::with(['images', 'primaryImage', 'galleryImages', 'attributes.values', 'variations.attributeValues', 'specificationSections.specifications'])->findOrFail($id);
+        $data = [
+            'title' => "Edit Decorative Product",
+            'main_module' => $this->main_module,
+            'method' => 'Edit',
+            'action' => route('decorative_product_admin.update', $id),
+            'product' => $product,
+            'global_attributes' => \App\Models\DecorativeAttribute::with('values')->get(),
+            'categories' => \App\Models\DecorativeCategory::with('parent')->orderBy('name', 'asc')->get()
+        ];
+        return view('admin.decorative-products.edit', $data);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'sku' => 'required|string|unique:decorative_products,sku,' . $id,
+        ]);
+
+        $product = DecorativeProduct::findOrFail($id);
+        $product->update([
+            'title' => $request->title,
+            'sku' => $request->sku,
+            'slug' => Str::slug($request->title . '-' . $request->sku),
+            'short_description' => $request->short_description,
+            'description' => $request->description,
+            'status' => $request->status ?? 'active',
+            'sort_order' => $request->sort_order ?? 0,
+        ]);
+
+        $this->saveRelations($request, $product);
+
+        return redirect()->route('decorative_product_admin')->with('success', 'Product updated successfully.');
+    }
+
+    private function saveRelations(Request $request, DecorativeProduct $product)
+    {
+        // 0. Save Categories
+        if ($request->has('categories')) {
+            $product->categories()->sync($request->categories);
+        } else {
+            $product->categories()->sync([]);
+        }
+
+        // 1. Save Product Attributes & Values
+        $product->attributes()->delete();
+        
+        if ($request->has('product_attributes')) {
+            foreach ($request->product_attributes as $attr_data) {
+                if (isset($attr_data['attribute_id']) && !empty($attr_data['attribute_id'])) {
+                    $prod_attr = $product->attributes()->create([
+                        'decorative_attribute_id' => $attr_data['attribute_id'],
+                        'is_variation' => isset($attr_data['is_variation']) ? 1 : 0,
+                        'display_order' => $attr_data['display_order'] ?? 0,
+                    ]);
+
+                    if (isset($attr_data['values']) && is_array($attr_data['values'])) {
+                        foreach ($attr_data['values'] as $value_id) {
+                            $prod_attr->values()->create([
+                                'decorative_attribute_value_id' => $value_id
+                            ]);
+                        }
+                    }
+                }
+            }
+        }
+
+        // 2. Save Variations
+        // Get existing variations to retain images if not re-uploaded
+        $existingVariations = $product->variations()->with('galleryImages')->get()->keyBy('id');
+        $product->variations()->forceDelete();
+        
+        if ($request->has('variations')) {
+            foreach ($request->variations as $index => $var_data) {
+                // Variations can now be saved even without an SKU
+                if (true) {
+                    
+                    // Handle image upload
+                    $imagePath = null;
+                    if ($request->hasFile("variations.{$index}.image")) {
+                        $imagePath = $this->uploadImage($request->file("variations.{$index}.image"), 'decorative_products');
+                    } elseif (isset($var_data['existing_id']) && isset($existingVariations[$var_data['existing_id']])) {
+                        $imagePath = $existingVariations[$var_data['existing_id']]->image;
+                    }
+
+                    $variation = $product->variations()->create([
+                        'sku' => $var_data['sku'] ?? null,
+                        'image' => $imagePath,
+                        'status' => $var_data['status'] ?? 'active',
+                        'sort_order' => $var_data['sort_order'] ?? 0,
+                    ]);
+
+                    // Re-attach existing gallery images
+                    if (isset($var_data['existing_id']) && isset($existingVariations[$var_data['existing_id']])) {
+                        $oldVariation = $existingVariations[$var_data['existing_id']];
+                        foreach ($oldVariation->galleryImages as $oldGalImg) {
+                            $variation->galleryImages()->create([
+                                'image' => $oldGalImg->image,
+                                'sort_order' => $oldGalImg->sort_order
+                            ]);
+                        }
+                    }
+
+                    // Save NEW variation gallery images
+                    if ($request->hasFile("variations.{$index}.gallery_images")) {
+                        foreach ($request->file("variations.{$index}.gallery_images") as $file) {
+                            $path = $this->uploadImage($file, 'decorative_products');
+                            $variation->galleryImages()->create(['image' => $path]);
+                        }
+                    }
+
+                    // Save variation attribute values
+                    if (isset($var_data['attributes']) && is_array($var_data['attributes'])) {
+                        foreach ($var_data['attributes'] as $val_id) {
+                            if (!empty($val_id)) {
+                                $variation->attributeValues()->attach($val_id);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // 3. Save Specification Sections & Specs
+        $product->specificationSections()->delete();
+        if ($request->has('spec_sections')) {
+            foreach ($request->spec_sections as $sec_data) {
+                if (isset($sec_data['title']) && !empty($sec_data['title'])) {
+                    $section = $product->specificationSections()->create([
+                        'title' => $sec_data['title'],
+                        'display_order' => $sec_data['display_order'] ?? 0,
+                    ]);
+
+                    if (isset($sec_data['specs']) && is_array($sec_data['specs'])) {
+                        foreach ($sec_data['specs'] as $spec_data) {
+                            if (isset($spec_data['label']) && !empty($spec_data['label'])) {
+                                $section->specifications()->create([
+                                    'label' => $spec_data['label'],
+                                    'value' => $spec_data['value'] ?? '',
+                                    'display_order' => $spec_data['display_order'] ?? 0,
+                                ]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // 4. Save Images
+        if ($request->hasFile('primary_image')) {
+            // Delete old primary
+            $product->primaryImage()->delete();
+            $path = $this->uploadImage($request->file('primary_image'), 'decorative_products');
+            $product->images()->create(['image' => $path, 'type' => 'PRIMARY']);
+        }
+
+        if ($request->hasFile('gallery_images')) {
+            foreach ($request->file('gallery_images') as $file) {
+                $path = $this->uploadImage($file, 'decorative_products');
+                $product->images()->create(['image' => $path, 'type' => 'GALLERY']);
+            }
+        }
+    }
+
+    private function uploadImage($file, $path)
+    {
+        $name = time() . '-' . $file->getClientOriginalName();
+        $file->move(public_path('uploads/' . $path), $name);
+        return $name;
+    }
+}

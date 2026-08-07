@@ -73,6 +73,9 @@ Route::get('products/category/{any}', [ProductController::class, 'subTagsByFilte
 Route::get('search', [ProductController::class, 'search'])->name('search');
 Route::get('category/{any}', [ProductController::class, 'search'])->name('category');
 
+Route::get('decorative-products', [App\Http\Controllers\DecorativeProductController::class, 'index'])->name('decorative_products');
+Route::get('decorative-products/{slug}', [App\Http\Controllers\DecorativeProductController::class, 'show'])->name('decorative_product_detail');
+
 Route::get('subscribe-newsletter', [WebsiteHomeController::class, 'subscribe'])->name('subscribe');
 Route::get('verify_email/{any}', [WebsiteHomeController::class, 'verify_email'])->name('verify_email');
 
@@ -286,6 +289,30 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('/homeslider/insert', [AdminHomeSliderController::class, 'insert'])->name('homeslider_admin.insert');
         Route::post('/homeslider/update/{any}', [AdminHomeSliderController::class, 'update'])->name('homeslider_admin.update');
 
+        /********************DECORATIVE CATEGORIES********************/
+        Route::get('/decorative-categories', [App\Http\Controllers\Admin\DecorativeCategoryController::class, 'index'])->name('decorative_category_admin');
+        Route::get('/decorative-categories/add', [App\Http\Controllers\Admin\DecorativeCategoryController::class, 'add'])->name('decorative_category_admin.add');
+        Route::post('/decorative-categories/store', [App\Http\Controllers\Admin\DecorativeCategoryController::class, 'store'])->name('decorative_category_admin.store');
+        Route::get('/decorative-categories/edit/{id}', [App\Http\Controllers\Admin\DecorativeCategoryController::class, 'edit'])->name('decorative_category_admin.edit');
+        Route::post('/decorative-categories/update/{id}', [App\Http\Controllers\Admin\DecorativeCategoryController::class, 'update'])->name('decorative_category_admin.update');
+        Route::get('/decorative-categories/delete/{id}', [App\Http\Controllers\Admin\DecorativeCategoryController::class, 'destroy'])->name('decorative_category_admin.delete');
+
+        /********************DECORATIVE PRODUCTS********************/
+        Route::get('/decorative-products', [App\Http\Controllers\Admin\DecorativeProductAdminController::class, 'index'])->name('decorative_product_admin');
+        Route::get('/decorative-products/list', [App\Http\Controllers\Admin\DecorativeProductAdminController::class, 'list'])->name('decorative_product_admin.list');
+        Route::get('/decorative-products/add', [App\Http\Controllers\Admin\DecorativeProductAdminController::class, 'add'])->name('decorative_product_admin.add');
+        Route::post('/decorative-products/insert', [App\Http\Controllers\Admin\DecorativeProductAdminController::class, 'insert'])->name('decorative_product_admin.insert');
+        Route::get('/decorative-products/edit/{any}', [App\Http\Controllers\Admin\DecorativeProductAdminController::class, 'edit'])->name('decorative_product_admin.edit');
+        Route::post('/decorative-products/update/{any}', [App\Http\Controllers\Admin\DecorativeProductAdminController::class, 'update'])->name('decorative_product_admin.update');
+
+        /********************DECORATIVE ATTRIBUTES********************/
+        Route::get('/decorative-attributes', [App\Http\Controllers\Admin\DecorativeAttributeController::class, 'index'])->name('decorative_attribute_admin');
+        Route::get('/decorative-attributes/list', [App\Http\Controllers\Admin\DecorativeAttributeController::class, 'list'])->name('decorative_attribute_admin.list');
+        Route::get('/decorative-attributes/add', [App\Http\Controllers\Admin\DecorativeAttributeController::class, 'add'])->name('decorative_attribute_admin.add');
+        Route::post('/decorative-attributes/insert', [App\Http\Controllers\Admin\DecorativeAttributeController::class, 'insert'])->name('decorative_attribute_admin.insert');
+        Route::get('/decorative-attributes/edit/{any}', [App\Http\Controllers\Admin\DecorativeAttributeController::class, 'edit'])->name('decorative_attribute_admin.edit');
+        Route::post('/decorative-attributes/update/{any}', [App\Http\Controllers\Admin\DecorativeAttributeController::class, 'update'])->name('decorative_attribute_admin.update');
+        Route::get('/decorative-attributes/delete/{any}', [App\Http\Controllers\Admin\DecorativeAttributeController::class, 'delete'])->name('decorative_attribute_admin.delete');
 
     });
 });

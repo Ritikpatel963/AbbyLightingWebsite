@@ -62,6 +62,18 @@
                             <span class="menu-title" data-i18n="Products">Products</span>
                         </a>
                     </li>
+                    <li class="nav-item has-sub {{ (@$main_module == 'Decorative Product') ? 'open' : '' }}">
+                        <a href="#">
+                            <i class="ft-package"></i>
+                            <span class="menu-title" data-i18n="Decorative">Decorative Products</span>
+                        </a>
+                        <ul class="menu-content">
+                            <li class="{{(Route::currentRouteName() == 'decorative_product_admin') ? 'active' : ''}}"><a class="menu-item" href="{{route('decorative_product_admin')}}">All Decorative</a></li>
+                            <li class="{{(Route::currentRouteName() == 'decorative_product_admin.add') ? 'active' : ''}}"><a class="menu-item" href="{{route('decorative_product_admin.add')}}">Add Decorative</a></li>
+                            <li class="{{(Route::currentRouteName() == 'decorative_attribute_admin' || Route::currentRouteName() == 'decorative_attribute_admin.add' || Route::currentRouteName() == 'decorative_attribute_admin.edit') ? 'active' : ''}}"><a class="menu-item" href="{{route('decorative_attribute_admin')}}">Attributes</a></li>
+                            <li class="{{(Route::currentRouteName() == 'decorative_category_admin' || Route::currentRouteName() == 'decorative_category_admin.add' || Route::currentRouteName() == 'decorative_category_admin.edit') ? 'active' : ''}}"><a class="menu-item" href="{{route('decorative_category_admin')}}">Categories</a></li>
+                        </ul>
+                    </li>
                 @else
                     {{-- Normal admin → full menu --}}
                     <li class="nav-item {{(@$main_module == 'Contact Form') ? 'active' : ''}}"><a href="{{route('contact_form_admin')}}"><i class="fa fa-list-alt"></i><span class="menu-title" data-i18n="Contact Forms">Contact Forms</span></a></li>
@@ -70,6 +82,16 @@
                     <li class="nav-item {{(@$main_module == 'Tags') ? 'active' : ''}}"><a href="{{route('tag_admin')}}"><i class="icon-tag"></i><span class="menu-title" data-i18n="Tags">Tags</span></a></li>
                     <li class="nav-item {{(@$main_module == 'Sub Tags') ? 'active' : ''}}"><a href="{{route('sub_tag_admin')}}"><i class="icon-tag"></i><span class="menu-title" data-i18n="Tags">Sub Tags</span></a></li>
                     <li class="nav-item {{(@$main_module == 'Product') ? 'active' : ''}}"><a href="{{route('product_admin')}}"><i class="ft-package"></i><span class="menu-title" data-i18n="Products">Products</span></a></li>
+                    
+                    <li class="nav-item has-sub {{ (@$main_module == 'Decorative Product') ? 'open' : '' }}">
+                        <a href="#"><i class="ft-package"></i><span class="menu-title" data-i18n="Decorative">Decorative Products</span></a>
+                        <ul class="menu-content">
+                            <li class="{{(Route::currentRouteName() == 'decorative_product_admin') ? 'active' : ''}}"><a class="menu-item" href="{{route('decorative_product_admin')}}">All Decorative</a></li>
+                            <li class="{{(Route::currentRouteName() == 'decorative_product_admin.add') ? 'active' : ''}}"><a class="menu-item" href="{{route('decorative_product_admin.add')}}">Add Decorative</a></li>
+                            <li class="{{(Route::currentRouteName() == 'decorative_attribute_admin' || Route::currentRouteName() == 'decorative_attribute_admin.add' || Route::currentRouteName() == 'decorative_attribute_admin.edit') ? 'active' : ''}}"><a class="menu-item" href="{{route('decorative_attribute_admin')}}">Attributes</a></li>
+                            <li class="{{(Route::currentRouteName() == 'decorative_category_admin' || Route::currentRouteName() == 'decorative_category_admin.add' || Route::currentRouteName() == 'decorative_category_admin.edit') ? 'active' : ''}}"><a class="menu-item" href="{{route('decorative_category_admin')}}">Categories</a></li>
+                        </ul>
+                    </li>
                     <li class="nav-item {{(@$main_module == 'Icons') ? 'active' : ''}}"><a href="{{route('icon_admin')}}"><i class="ft-package"></i><span class="menu-title" data-i18n="Icons">Icons</span></a></li>
 
                     <li class="nav-item {{(@$main_module == 'Attributes') ? 'active' : ''}}"><a href="{{route('attribute_admin')}}"><i class="fa fa-list-alt"></i><span class="menu-title" data-i18n="Attributes">Attributes</span></a></li>
