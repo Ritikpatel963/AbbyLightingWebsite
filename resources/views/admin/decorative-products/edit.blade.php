@@ -80,9 +80,9 @@
                                 <span>Click to Upload Primary Image</span>
                                 <input type="file" name="primary_image" accept="image/*" onchange="previewImage(this, 'primary-image-preview')">
                             </div>
-                            <div class="mt-2" id="primary-image-preview" style="{{ $product->primary_image ? 'display: block;' : 'display: none;' }}">
-                                @if($product->primary_image)
-                                <div class="img-preview-box"><img src="{{ asset('uploads/decorative_products/'.$product->primary_image) }}"></div>
+                            <div class="mt-2" id="primary-image-preview" style="{{ $product->primaryImage ? 'display: block;' : 'display: none;' }}">
+                                @if($product->primaryImage)
+                                <div class="img-preview-box"><img src="{{ asset('uploads/decorative_products/'.$product->primaryImage->image) }}"></div>
                                 @else
                                 <div class="img-preview-box"><img src=""></div>
                                 @endif
