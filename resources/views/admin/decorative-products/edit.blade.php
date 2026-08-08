@@ -103,7 +103,7 @@
                                         <img src="{{ asset('uploads/decorative_products/' . $galImg->image) }}">
                                         <label class="gallery-delete-overlay" title="Mark for deletion">
                                             <input type="checkbox" name="delete_gallery[]" value="{{ $galImg->id }}">
-                                            <i class="fas fa-times"></i>
+                                            <span class="delete-icon">&times;</span>
                                         </label>
                                     </div>
                                 @endforeach
@@ -224,7 +224,7 @@
                                                             <img src="{{ asset('uploads/decorative_products/' . $galImg->image) }}">
                                                             <label class="gallery-delete-overlay" title="Mark for deletion">
                                                                 <input type="checkbox" name="delete_var_gallery[{{ $vIndex }}][]" value="{{ $galImg->id }}">
-                                                                <i class="fas fa-times"></i>
+                                                                <span class="delete-icon">&times;</span>
                                                             </label>
                                                         </div>
                                                     @endforeach

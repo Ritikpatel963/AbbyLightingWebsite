@@ -286,13 +286,16 @@ label {
     color: white;
 }
 
-.gallery-delete-overlay i {
+.gallery-delete-overlay span.delete-icon {
     color: #dc3545;
-    font-size: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 1;
     transition: color 0.2s ease;
+    user-select: none;
 }
 
-.gallery-delete-overlay:hover i {
+.gallery-delete-overlay:hover span.delete-icon {
     color: white;
 }
 
@@ -300,9 +303,9 @@ label {
     display: none;
 }
 
-/* When the hidden checkbox inside the overlay is checked, fade the image and change icon */
-.gallery-delete-overlay input[type="checkbox"]:checked ~ i::before {
-    content: "\f0e2"; /* FontAwesome undo icon if you want, or keep it as cross but red background */
+/* When the hidden checkbox inside the overlay is checked, change icon to undo arrow or leave as is */
+.gallery-delete-overlay input[type="checkbox"]:checked ~ span.delete-icon {
+    content: "↺"; 
 }
 .gallery-delete-overlay input[type="checkbox"]:checked {
     /* We can style the parent or adjacent image using :has if supported, but a simpler way is just to leave it checked. Let's make the background red permanently when checked */
@@ -318,6 +321,6 @@ label {
     background-color: #dc3545;
 }
 
-.img-preview-box:has(.gallery-delete-overlay input[type="checkbox"]:checked) .gallery-delete-overlay i {
+.img-preview-box:has(.gallery-delete-overlay input[type="checkbox"]:checked) .gallery-delete-overlay span.delete-icon {
     color: white;
 }
