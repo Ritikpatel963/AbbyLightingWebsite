@@ -21,7 +21,7 @@
             <div class="p-4">
                 <form action="{{ $action }}" method="POST">
                     @csrf
-                    
+
                     <h4 class="section-title mb-4">Attribute Details</h4>
                     <div class="row">
                         <div class="col-md-6 form-group">
@@ -37,6 +37,23 @@
 
                     <div id="values-container" class="mb-4">
                         @foreach($attribute->values as $index => $val)
+                        @php
+                            $attrNameLower = strtolower($attribute->name);
+                            $isColor = str_contains($attrNameLower, 'color') || str_contains($attrNameLower, 'colour') || str_contains($attrNameLower, 'finish');
+                            $valHex = $val->hex_code ?? '#ffffff';
+                            $isGradient = str_contains($valHex, 'gradient');
+                            $gradAngle = 45;
+                            $gradColor1 = '#ffffff';
+                            $gradColor2 = '#000000';
+                            if ($isGradient) {
+                                preg_match('/linear-gradient\(\s*(\d+)deg\s*,\s*(#[a-fA-F0-9]{3,6})\s*,\s*(#[a-fA-F0-9]{3,6})\s*\)/', $valHex, $matches);
+                                if(count($matches) >= 4) {
+                                    $gradAngle = $matches[1];
+                                    $gradColor1 = $matches[2];
+                                    $gradColor2 = $matches[3];
+                                }
+                            }
+                        @endphp
                         <div class="spec-card p-3 mb-3 shadow-sm rounded border d-flex justify-content-between align-items-center value-row">
                             <div class="flex-grow-1 mr-3">
                                 <label class="font-weight-bold text-muted small">Value Name (e.g., Red, Small)</label>
@@ -44,26 +61,7 @@
                             </div>
                             <div class="flex-grow-1 mr-3">
                                 <label class="font-weight-bold text-muted small">Value Color/Code</label>
-                                @php
-                                    $attrNameLower = strtolower($attribute->name);
-                                    $isColor = str_contains($attrNameLower, 'color') || str_contains($attrNameLower, 'colour') || str_contains($attrNameLower, 'finish');
-                                @endphp
                                 @if($isColor)
-                                    @php
-                                        $valHex = $val->hex_code ?? '#ffffff';
-                                        $isGradient = str_contains($valHex, 'gradient');
-                                        $gradAngle = 45;
-                                        $gradColor1 = '#ffffff';
-                                        $gradColor2 = '#000000';
-                                        if ($isGradient) {
-                                            preg_match('/linear-gradient\(\s*(\d+)deg\s*,\s*(#[a-fA-F0-9]{3,6})\s*,\s*(#[a-fA-F0-9]{3,6})\s*\)/', $valHex, $matches);
-                                            if(count($matches) >= 4) {
-                                                $gradAngle = $matches[1];
-                                                $gradColor1 = $matches[2];
-                                                $gradColor2 = $matches[3];
-                                            }
-                                        }
-                                    @endphp
                                     <div class="color-input-container">
                                         <div class="mb-1 d-flex align-items-center" style="gap: 5px;">
                                             <select class="form-control color-type-select" style="width: auto;">
@@ -103,6 +101,7 @@
         </div>
     </div>
 </div>
+@stop
 
 @section('extra_js')
 <script>
@@ -112,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('add-value').addEventListener('click', function() {
         const attrName = document.querySelector('input[name="name"]').value.toLowerCase();
         const isColor = attrName.includes('color') || attrName.includes('colour') || attrName.includes('finish');
-        
+
         let hexHtml = '';
         if (isColor) {
             hexHtml = `
@@ -142,7 +141,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         const container = document.getElementById('values-container');
-        const tr = `
+        const row = `
             <div class="spec-card p-3 mb-3 shadow-sm rounded border d-flex justify-content-between align-items-center value-row">
                 <div class="flex-grow-1 mr-3">
                     <label class="font-weight-bold text-muted small">Value Name (e.g., Red, Small)</label>
@@ -158,7 +157,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             </div>
         `;
-        container.insertAdjacentHTML('beforeend', tr);
+        container.insertAdjacentHTML('beforeend', row);
         valueIndex++;
     });
 
@@ -171,9 +170,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.addEventListener('change', function(e) {
         if (e.target.classList.contains('color-type-select')) {
-            const container = e.target.closest('.color-input-container');
-            const solidPicker = container.querySelector('.solid-picker');
-            const gradPickers = container.querySelector('.gradient-pickers');
+            const colorContainer = e.target.closest('.color-input-container');
+            const solidPicker = colorContainer.querySelector('.solid-picker');
+            const gradPickers = colorContainer.querySelector('.gradient-pickers');
             if (e.target.value === 'gradient') {
                 solidPicker.style.display = 'none';
                 gradPickers.style.display = 'flex';
@@ -181,36 +180,34 @@ document.addEventListener('DOMContentLoaded', function() {
                 solidPicker.style.display = 'block';
                 gradPickers.style.display = 'none';
             }
-            updateColorOutput(container);
+            updateColorOutput(colorContainer);
         }
     });
 
     document.addEventListener('input', function(e) {
         if (e.target.classList.contains('color-1') || e.target.classList.contains('color-2') || e.target.classList.contains('gradient-angle')) {
-            const container = e.target.closest('.color-input-container');
-            if (container) {
+            const colorContainer = e.target.closest('.color-input-container');
+            if (colorContainer) {
                 if (e.target.classList.contains('color-1')) {
-                    const c1s = container.querySelectorAll('.color-1');
-                    c1s.forEach(el => el.value = e.target.value);
+                    colorContainer.querySelectorAll('.color-1').forEach(el => el.value = e.target.value);
                 }
-                updateColorOutput(container);
+                updateColorOutput(colorContainer);
             }
         }
     });
 
-    function updateColorOutput(container) {
-        const type = container.querySelector('.color-type-select').value;
-        const output = container.querySelector('.final-color-output');
-        const color1 = container.querySelector('.color-1').value;
+    function updateColorOutput(colorContainer) {
+        const type = colorContainer.querySelector('.color-type-select').value;
+        const output = colorContainer.querySelector('.final-color-output');
+        const color1 = colorContainer.querySelector('.color-1').value;
         if (type === 'solid') {
             output.value = color1;
         } else {
-            const color2 = container.querySelector('.color-2').value;
-            const angle = container.querySelector('.gradient-angle').value || 45;
+            const color2 = colorContainer.querySelector('.color-2').value;
+            const angle = colorContainer.querySelector('.gradient-angle').value || 45;
             output.value = `linear-gradient(${angle}deg, ${color1}, ${color2})`;
         }
     }
 });
 </script>
-@stop
 @stop

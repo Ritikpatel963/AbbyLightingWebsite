@@ -46,6 +46,7 @@
         </div>
     </div>
 </div>
+@stop
 
 @section('extra_js')
 <script>
@@ -155,6 +156,4 @@
         }
     });
 </script>
-@stop
-
 @stop
