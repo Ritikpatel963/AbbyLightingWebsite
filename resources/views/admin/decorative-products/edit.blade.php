@@ -101,9 +101,10 @@
                                 @foreach($product->galleryImages as $galImg)
                                     <div class="img-preview-box" style="position: relative;">
                                         <img src="{{ asset('uploads/decorative_products/' . $galImg->image) }}">
-                                        <div class="text-center mt-1">
-                                            <input type="checkbox" name="delete_gallery[]" value="{{ $galImg->id }}"> <small class="text-danger">Delete</small>
-                                        </div>
+                                        <label class="gallery-delete-overlay" title="Mark for deletion">
+                                            <input type="checkbox" name="delete_gallery[]" value="{{ $galImg->id }}">
+                                            <i class="fas fa-times"></i>
+                                        </label>
                                     </div>
                                 @endforeach
                             </div>
@@ -221,10 +222,10 @@
                                                     @foreach($variation->galleryImages as $galImg)
                                                         <div class="img-preview-box" style="position: relative;">
                                                             <img src="{{ asset('uploads/decorative_products/' . $galImg->image) }}">
-                                                            <div class="text-center mt-1">
+                                                            <label class="gallery-delete-overlay" title="Mark for deletion">
                                                                 <input type="checkbox" name="delete_var_gallery[{{ $vIndex }}][]" value="{{ $galImg->id }}">
-                                                                <small class="text-danger">Del</small>
-                                                            </div>
+                                                                <i class="fas fa-times"></i>
+                                                            </label>
                                                         </div>
                                                     @endforeach
                                                 </div>
