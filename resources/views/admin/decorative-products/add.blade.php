@@ -256,22 +256,69 @@ $(document).ready(function() {
         }
 
         const container = document.getElementById('product-variations-container');
-        container.innerHTML = ''; // Clear existing
-        varIndex = 0;
-
         const baseSku = document.querySelector('input[name="sku"]').value;
+
+        const existingBlocks = Array.from(document.querySelectorAll('.variation-block'));
+        const existingVars = existingBlocks.map(block => {
+            const attrInputs = Array.from(block.querySelectorAll('input[name*="[attributes][]"]'));
+            const ids = attrInputs.map(inp => inp.value).sort();
+            return {
+                block: block,
+                ids: ids,
+                used: false
+            };
+        });
 
         combinations.forEach(combo => {
             let comboNameParts = [];
-            let comboIdsHtml = '';
             
             combo.forEach(val => {
                 comboNameParts.push(val.name);
-                comboIdsHtml += `<input type="hidden" name="variations[${varIndex}][attributes][]" value="${val.id}">`;
             });
 
             const comboName = comboNameParts.join(' - ');
             const suggestedSku = baseSku ? baseSku + '-' + comboNameParts.map(p => p.substring(0,3).toUpperCase()).join('-') : '';
+            const comboIds = combo.map(v => String(v.id)).sort();
+
+            // 1. Check for exact match
+            const exactMatch = existingVars.find(ev => ev.ids.join(',') === comboIds.join(','));
+            if (exactMatch) {
+                exactMatch.used = true;
+                return; // Already exists, do nothing
+            }
+
+            // 2. Check for subset match (an old variation that can be upgraded)
+            const subsetMatch = existingVars.find(ev => !ev.used && ev.ids.length > 0 && ev.ids.every(id => comboIds.includes(id)));
+            if (subsetMatch) {
+                subsetMatch.used = true;
+                // Update title
+                const titleEl = subsetMatch.block.querySelector('strong');
+                if (titleEl) titleEl.textContent = comboName;
+                
+                // Add missing attribute hidden inputs
+                const attrContainer = titleEl.parentNode;
+                const match = subsetMatch.block.innerHTML.match(/variations\[(\d+)\]/);
+                const bVarIndex = match ? match[1] : varIndex; 
+
+                combo.forEach(val => {
+                    if (!subsetMatch.ids.includes(String(val.id))) {
+                        attrContainer.insertAdjacentHTML('beforeend', `<input type="hidden" name="variations[${bVarIndex}][attributes][]" value="${val.id}">`);
+                    }
+                });
+
+                // Update suggested SKU if empty
+                const skuInput = subsetMatch.block.querySelector('input[placeholder="SKU"]');
+                if (skuInput && skuInput.value === '') {
+                    skuInput.value = suggestedSku;
+                }
+                return; // Upgraded existing, so don't append a new one
+            }
+
+            // 3. No match, create a brand new block
+            let comboIdsHtml = '';
+            combo.forEach(val => {
+                comboIdsHtml += `<input type="hidden" name="variations[${varIndex}][attributes][]" value="${val.id}">`;
+            });
 
             const varHtml = `
                 <div class="card border-info mb-2 variation-block" data-var-index="${varIndex}">
