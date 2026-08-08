@@ -146,14 +146,13 @@
                                         </div>
                                         <div class="col-md-7">
                                             <label>Select Values</label>
-                                            <select name="product_attributes[{{ $aIndex }}][values][]" class="form-control attr-values-select" multiple required>
+                                            <select name="product_attributes[{{ $aIndex }}][values][]" class="form-control attr-values-select select2" multiple required data-placeholder="Select values">
                                                 @if($prodAttr->attribute && $prodAttr->attribute->values)
                                                     @foreach($prodAttr->attribute->values as $val)
                                                         <option value="{{ $val->id }}" {{ $prodAttr->values->contains('decorative_attribute_value_id', $val->id) ? 'selected' : '' }}>{{ $val->name }}</option>
                                                     @endforeach
                                                 @endif
                                             </select>
-                                            <small class="form-text text-muted">Hold Ctrl/Cmd to select multiple</small>
                                         </div>
                                         <div class="col-md-2 d-flex align-items-end">
                                             <button type="button" class="btn btn-danger btn-sm remove-prod-attr w-100">Remove</button>
@@ -353,10 +352,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                     <div class="col-md-7">
                         <label>Select Values</label>
-                        <select name="product_attributes[${attrIndex}][values][]" class="form-control attr-values-select" multiple required>
+                        <select name="product_attributes[${attrIndex}][values][]" class="form-control attr-values-select select2" multiple required data-placeholder="Select values">
                             ${optionsHtml}
                         </select>
-                        <small class="form-text text-muted">Hold Ctrl/Cmd to select multiple</small>
                     </div>
                     <div class="col-md-2 d-flex align-items-end">
                         <button type="button" class="btn btn-danger btn-sm remove-prod-attr w-100">Remove</button>
@@ -365,6 +363,9 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
         container.insertAdjacentHTML('beforeend', html);
+        // Initialize select2 on the newly inserted select element
+        $(container.lastElementChild).find('.select2').select2();
+
         attrIndex++;
         select.value = ''; // Reset
     });
