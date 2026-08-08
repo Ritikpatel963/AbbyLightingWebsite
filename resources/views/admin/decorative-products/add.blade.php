@@ -15,8 +15,8 @@
 @section('content')
 <div class="row">
     <div class="col-12">
-        <div class="card">
-            <div class="card-body">
+        <div class="premium-card">
+            <div class="premium-card-body">
                 @if ($errors->any())
                     <div class="alert alert-danger">
                         <ul>
@@ -73,14 +73,37 @@
                         </div>
                         <div class="col-md-12 form-group">
                             <label for="primary_image">Primary Image</label>
-                            <input type="file" name="primary_image" class="form-control-file" accept="image/*" onchange="previewImage(this, 'primary-image-preview')">
+                            <div class="custom-file-upload">
+                                <span>Click to Upload Primary Image</span>
+                                <input type="file" name="primary_image" accept="image/*" onchange="previewImage(this, 'primary-image-preview')">
+                            </div>
                             <div class="mt-2" id="primary-image-preview" style="display: none;">
-                                <img src="" style="max-height: 150px; border: 1px solid #ccc; padding: 2px;">
+                                <div class="img-preview-box"><img src=""></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label for="thumbnail">Thumbnail</label>
+                            <div class="custom-file-upload">
+                                <span>Click to Upload Thumbnail</span>
+                                <input type="file" name="thumbnail" accept="image/*" required onchange="previewImage(this, 'thumbnail-preview')">
+                            </div>
+                            <div class="mt-2" id="thumbnail-preview" style="display: none;">
+                                <div class="img-preview-box"><img src=""></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label for="brochure">Brochure (Optional)</label>
+                            <div class="custom-file-upload">
+                                <span>Click to Upload Brochure</span>
+                                <input type="file" name="brochure" accept=".pdf,.doc,.docx">
                             </div>
                         </div>
                         <div class="col-md-12 form-group">
                             <label for="gallery_images">Gallery Images (Multiple)</label>
-                            <input type="file" name="gallery_images[]" class="form-control-file" accept="image/*" multiple onchange="previewGalleryImages(this, 'gallery-images-preview')">
+                            <div class="custom-file-upload">
+                                <span>Click to Upload Gallery Images</span>
+                                <input type="file" name="gallery_images[]" accept="image/*" multiple onchange="previewGalleryImages(this, 'gallery-images-preview')">
+                            </div>
                             <div class="mt-2 d-flex flex-wrap gap-2" id="gallery-images-preview">
                                 <!-- Previews will be appended here -->
                             </div>
@@ -139,6 +162,7 @@
 @stop
 
 @section('extra_css')
+<link rel="stylesheet" href="{{ asset('adminlte/css/product-variations.css') }}">
 <style>
     .select2-container {
         width: 100% !important;
@@ -177,27 +201,25 @@ $(document).ready(function() {
 
         const container = document.getElementById('product-attributes-container');
         const html = `
-            <div class="card bg-light mb-3 prod-attr-block" data-attr-id="${attrId}" data-attr-name="${attrName}">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <h6>${attrName}</h6>
-                            <input type="hidden" name="product_attributes[${attrIndex}][attribute_id]" value="${attrId}">
-                            <div class="form-check mt-2">
-                                <input type="checkbox" class="form-check-input is-variation-checkbox" name="product_attributes[${attrIndex}][is_variation]" value="1" id="var_chk_${attrIndex}">
-                                <label class="form-check-label" for="var_chk_${attrIndex}">Used for variations</label>
-                            </div>
+            <div class="prod-attr-block" data-attr-id="${attrId}" data-attr-name="${attrName}">
+                <div class="row">
+                    <div class="col-md-3">
+                        <h6>${attrName}</h6>
+                        <input type="hidden" name="product_attributes[${attrIndex}][attribute_id]" value="${attrId}">
+                        <div class="form-check mt-2">
+                            <input type="checkbox" class="form-check-input is-variation-checkbox" name="product_attributes[${attrIndex}][is_variation]" value="1" id="var_chk_${attrIndex}">
+                            <label class="form-check-label" for="var_chk_${attrIndex}">Used for variations</label>
                         </div>
-                        <div class="col-md-7">
-                            <label>Select Values</label>
-                            <select name="product_attributes[${attrIndex}][values][]" class="form-control attr-values-select" multiple required>
-                                ${optionsHtml}
-                            </select>
-                            <small class="form-text text-muted">Hold Ctrl/Cmd to select multiple</small>
-                        </div>
-                        <div class="col-md-2 d-flex align-items-end">
-                            <button type="button" class="btn btn-danger btn-sm remove-prod-attr">Remove</button>
-                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <label>Select Values</label>
+                        <select name="product_attributes[${attrIndex}][values][]" class="form-control attr-values-select" multiple required>
+                            ${optionsHtml}
+                        </select>
+                        <small class="form-text text-muted">Hold Ctrl/Cmd to select multiple</small>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="button" class="btn btn-danger btn-sm remove-prod-attr w-100">Remove</button>
                     </div>
                 </div>
             </div>
@@ -321,48 +343,52 @@ $(document).ready(function() {
             });
 
             const varHtml = `
-                <div class="card border-info mb-2 variation-block" data-var-index="${varIndex}">
-                    <div class="card-body p-2">
-                        <div class="row align-items-center">
-                            <div class="col-md-2">
-                                <strong>${comboName}</strong>
-                                ${comboIdsHtml}
+                <div class="variation-block" data-var-index="${varIndex}">
+                    <div class="row align-items-center">
+                        <div class="col-md-2">
+                            <strong>${comboName}</strong>
+                            ${comboIdsHtml}
+                        </div>
+                        <div class="col-md-2">
+                            <label>SKU (Optional)</label>
+                            <input type="text" name="variations[${varIndex}][sku]" class="form-control form-control-sm" placeholder="SKU" value="${suggestedSku}">
+                        </div>
+                        <div class="col-md-3">
+                            <label>Primary Image</label>
+                            <div class="custom-file-upload">
+                                <span>Click to Upload Image</span>
+                                <input type="file" name="variations[${varIndex}][image]" accept="image/*" onchange="previewImage(this, 'var-img-preview-${varIndex}')">
                             </div>
-                            <div class="col-md-2">
-                                <label>SKU (Optional)</label>
-                                <input type="text" name="variations[${varIndex}][sku]" class="form-control form-control-sm" placeholder="SKU" value="${suggestedSku}">
-                            </div>
-                            <div class="col-md-3">
-                                <label>Primary Image</label>
-                                <input type="file" name="variations[${varIndex}][image]" class="form-control form-control-sm" accept="image/*" onchange="previewImage(this, 'var-img-preview-${varIndex}')">
-                                <div class="mt-1" id="var-img-preview-${varIndex}" style="display: none;">
-                                    <img src="" style="max-height: 50px; border: 1px solid #ccc; padding: 1px;">
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <label>Gallery Images</label>
-                                <input type="file" name="variations[${varIndex}][gallery_images][]" class="form-control form-control-sm" accept="image/*" multiple onchange="previewGalleryImages(this, 'var-gal-preview-${varIndex}')">
-                                <div class="mt-1 d-flex flex-wrap gap-1" id="var-gal-preview-${varIndex}"></div>
-                            </div>
-                            <div class="col-md-1">
-                                <label>Status</label>
-                                <select name="variations[${varIndex}][status]" class="form-control form-control-sm">
-                                    <option value="active">Active</option>
-                                    <option value="inactive">Inactive</option>
-                                </select>
-                            </div>
-                            <div class="col-md-1 text-right">
-                                <button type="button" class="btn btn-sm btn-danger remove-var">X</button>
+                            <div class="mt-1" id="var-img-preview-${varIndex}" style="display: none;">
+                                <div class="img-preview-box"><img src=""></div>
                             </div>
                         </div>
-                        <!-- Specification Sections for this variation -->
-                        <div class="mt-3 border-top pt-3">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h6 class="mb-0">Specification Sections</h6>
-                                <button type="button" class="btn btn-xs btn-info add-var-spec-section" data-var-index="${varIndex}">+ Add Section</button>
+                        <div class="col-md-3">
+                            <label>Gallery Images</label>
+                            <div class="custom-file-upload">
+                                <span>Click to Upload Gallery</span>
+                                <input type="file" name="variations[${varIndex}][gallery_images][]" accept="image/*" multiple onchange="previewGalleryImages(this, 'var-gal-preview-${varIndex}')">
                             </div>
-                            <div class="var-spec-sections-container" id="var-spec-container-${varIndex}"></div>
+                            <div class="mt-1 d-flex flex-wrap gap-1" id="var-gal-preview-${varIndex}"></div>
                         </div>
+                        <div class="col-md-1">
+                            <label>Status</label>
+                            <select name="variations[${varIndex}][status]" class="form-control form-control-sm">
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1 text-right">
+                            <button type="button" class="btn btn-sm btn-danger remove-var w-100">X</button>
+                        </div>
+                    </div>
+                    <!-- Specification Sections for this variation -->
+                    <div class="mt-3 border-top pt-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="mb-0">Specification Sections</h6>
+                            <button type="button" class="btn btn-sm btn-info add-var-spec-section" data-var-index="${varIndex}">+ Add Section</button>
+                        </div>
+                        <div class="var-spec-sections-container" id="var-spec-container-${varIndex}"></div>
                     </div>
                 </div>
             `;
@@ -378,30 +404,28 @@ $(document).ready(function() {
     // Variation-level Specification Sections
     function buildSpecSectionHtml(varIdx, secIdx) {
         return `
-            <div class="card bg-light mb-2 var-spec-section" data-sec-index="${secIdx}">
-                <div class="card-body p-2">
-                    <div class="row">
-                        <div class="col-md-5">
-                            <label>Section Title</label>
-                            <input type="text" name="variations[${varIdx}][spec_sections][${secIdx}][title]" class="form-control form-control-sm" required>
-                        </div>
-                        <div class="col-md-4">
-                            <label>Display Order</label>
-                            <input type="number" name="variations[${varIdx}][spec_sections][${secIdx}][display_order]" class="form-control form-control-sm" value="0">
-                        </div>
-                        <div class="col-md-3 d-flex align-items-end">
-                            <button type="button" class="btn btn-danger btn-sm remove-var-sec w-100">Remove Section</button>
-                        </div>
+            <div class="var-spec-section" data-sec-index="${secIdx}">
+                <div class="row">
+                    <div class="col-md-5">
+                        <label>Section Title</label>
+                        <input type="text" name="variations[${varIdx}][spec_sections][${secIdx}][title]" class="form-control" required>
                     </div>
-                    <div class="mt-2">
-                        <table class="table table-sm table-bordered bg-white mb-1">
-                            <thead><tr>
-                                <th>Label</th><th>Value</th><th>Order</th>
-                                <th><button type="button" class="btn btn-xs btn-success add-var-spec-row" data-var-index="${varIdx}" data-sec-index="${secIdx}">+ Row</button></th>
-                            </tr></thead>
-                            <tbody class="var-spec-rows-container" id="var-spec-rows-${varIdx}-${secIdx}"></tbody>
-                        </table>
+                    <div class="col-md-4">
+                        <label>Display Order</label>
+                        <input type="number" name="variations[${varIdx}][spec_sections][${secIdx}][display_order]" class="form-control" value="0">
                     </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button type="button" class="btn btn-danger btn-sm remove-var-sec w-100">Remove Section</button>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <table class="spec-table">
+                        <thead><tr>
+                            <th>Label</th><th>Value</th><th>Order</th>
+                            <th width="100"><button type="button" class="btn btn-sm btn-success add-var-spec-row w-100" data-var-index="${varIdx}" data-sec-index="${secIdx}">+ Row</button></th>
+                        </tr></thead>
+                        <tbody class="var-spec-rows-container" id="var-spec-rows-${varIdx}-${secIdx}"></tbody>
+                    </table>
                 </div>
             </div>
         `;
@@ -413,7 +437,7 @@ $(document).ready(function() {
                 <td><input type="text" name="variations[${varIdx}][spec_sections][${secIdx}][specs][${rowIdx}][label]" class="form-control form-control-sm" required></td>
                 <td><input type="text" name="variations[${varIdx}][spec_sections][${secIdx}][specs][${rowIdx}][value]" class="form-control form-control-sm"></td>
                 <td><input type="number" name="variations[${varIdx}][spec_sections][${secIdx}][specs][${rowIdx}][display_order]" class="form-control form-control-sm" value="0"></td>
-                <td><button type="button" class="btn btn-sm btn-danger remove-var-spec-row">X</button></td>
+                <td><button type="button" class="btn btn-sm btn-danger remove-var-spec-row w-100">X</button></td>
             </tr>
         `;
     }
@@ -460,13 +484,13 @@ function previewImage(input, previewId) {
     if (input.files && input.files[0]) {
         const reader = new FileReader();
         reader.onload = function(e) {
-            previewContainer.querySelector('img').src = e.target.result;
+            previewContainer.innerHTML = `<div class="img-preview-box"><img src="${e.target.result}"></div>`;
             previewContainer.style.display = 'block';
         }
         reader.readAsDataURL(input.files[0]);
     } else {
         previewContainer.style.display = 'none';
-        previewContainer.querySelector('img').src = '';
+        previewContainer.innerHTML = '';
     }
 }
 
@@ -477,14 +501,12 @@ function previewGalleryImages(input, previewContainerId) {
         Array.from(input.files).forEach(file => {
             const reader = new FileReader();
             reader.onload = function(e) {
+                const div = document.createElement('div');
+                div.className = 'img-preview-box';
                 const img = document.createElement('img');
                 img.src = e.target.result;
-                img.style.maxHeight = '100px';
-                img.style.border = '1px solid #ccc';
-                img.style.padding = '2px';
-                img.style.marginRight = '5px';
-                img.style.marginBottom = '5px';
-                container.appendChild(img);
+                div.appendChild(img);
+                container.appendChild(div);
             }
             reader.readAsDataURL(file);
         });
