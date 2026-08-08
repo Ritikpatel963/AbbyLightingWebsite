@@ -133,22 +133,21 @@ class DecorativeAttributeController extends Controller
 
     private function saveValues(Request $request, DecorativeAttribute $attribute)
     {
-        $submittedSlugs = [];
+        $submittedIds = [];
 
         if ($request->has('values') && is_array($request->values)) {
             foreach ($request->values as $val) {
-                if (isset($val['name']) && !empty($val['name'])) {
-                    $slug = Str::slug($val['name']);
-                    
-                    // Prevent duplicate slugs in the same submission
-                    if (in_array($slug, $submittedSlugs)) {
-                        $slug = $slug . '-' . uniqid();
-                    }
-                    $submittedSlugs[] = $slug;
+                if (!isset($val['name']) || empty($val['name'])) {
+                    continue;
+                }
 
+                $hexCode = isset($val['hex_code']) && $val['hex_code'] !== '' ? $val['hex_code'] : null;
+
+                // Existing value — update by ID
+                if (!empty($val['id'])) {
                     $value = \App\Models\DecorativeAttributeValue::withTrashed()
+                        ->where('id', $val['id'])
                         ->where('attribute_id', $attribute->id)
-                        ->where('slug', $slug)
                         ->first();
 
                     if ($value) {
@@ -156,25 +155,36 @@ class DecorativeAttributeController extends Controller
                             $value->restore();
                         }
                         $value->update([
-                            'name' => $val['name'],
-                            'hex_code' => $val['hex_code'] ?? null,
+                            'name'     => $val['name'],
+                            'slug'     => Str::slug($val['name']),
+                            'hex_code' => $hexCode,
                         ]);
-                    } else {
-                        $attribute->values()->create([
-                            'name' => $val['name'],
-                            'slug' => $slug,
-                            'hex_code' => $val['hex_code'] ?? null,
-                        ]);
+                        $submittedIds[] = $value->id;
+                        continue;
                     }
                 }
+
+                // New value — create it
+                $slug = Str::slug($val['name']);
+                // Avoid slug collision within same attribute
+                $existingSlug = \App\Models\DecorativeAttributeValue::withTrashed()
+                    ->where('attribute_id', $attribute->id)
+                    ->where('slug', $slug)
+                    ->first();
+                if ($existingSlug) {
+                    $slug = $slug . '-' . uniqid();
+                }
+
+                $newVal = $attribute->values()->create([
+                    'name'     => $val['name'],
+                    'slug'     => $slug,
+                    'hex_code' => $hexCode,
+                ]);
+                $submittedIds[] = $newVal->id;
             }
         }
 
-        // Soft delete values that were not submitted in this update
-        if (!empty($submittedSlugs)) {
-            $attribute->values()->whereNotIn('slug', $submittedSlugs)->delete();
-        } else {
-            $attribute->values()->delete();
-        }
+        // Delete any values not in this submission
+        $attribute->values()->whereNotIn('id', $submittedIds)->delete();
     }
 }
