@@ -98,7 +98,7 @@ class DecorativeProductAdminController extends Controller
 
     public function edit($id)
     {
-        $product = DecorativeProduct::with(['images', 'primaryImage', 'galleryImages', 'attributes.values', 'variations.attributeValues', 'specificationSections.specifications'])->findOrFail($id);
+        $product = DecorativeProduct::with(['images', 'primaryImage', 'galleryImages', 'attributes.values', 'variations.attributeValues', 'variations.specificationSections.specifications'])->findOrFail($id);
         $data = [
             'title' => "Edit Decorative Product",
             'main_module' => $this->main_module,
@@ -218,28 +218,26 @@ class DecorativeProductAdminController extends Controller
                             }
                         }
                     }
-                }
-            }
-        }
 
-        // 3. Save Specification Sections & Specs
-        $product->specificationSections()->delete();
-        if ($request->has('spec_sections')) {
-            foreach ($request->spec_sections as $sec_data) {
-                if (isset($sec_data['title']) && !empty($sec_data['title'])) {
-                    $section = $product->specificationSections()->create([
-                        'title' => $sec_data['title'],
-                        'display_order' => $sec_data['display_order'] ?? 0,
-                    ]);
-
-                    if (isset($sec_data['specs']) && is_array($sec_data['specs'])) {
-                        foreach ($sec_data['specs'] as $spec_data) {
-                            if (isset($spec_data['label']) && !empty($spec_data['label'])) {
-                                $section->specifications()->create([
-                                    'label' => $spec_data['label'],
-                                    'value' => $spec_data['value'] ?? '',
-                                    'display_order' => $spec_data['display_order'] ?? 0,
+                    // Save variation spec sections
+                    if (isset($var_data['spec_sections']) && is_array($var_data['spec_sections'])) {
+                        foreach ($var_data['spec_sections'] as $sec_data) {
+                            if (isset($sec_data['title']) && !empty($sec_data['title'])) {
+                                $section = $variation->specificationSections()->create([
+                                    'title'         => $sec_data['title'],
+                                    'display_order' => $sec_data['display_order'] ?? 0,
                                 ]);
+                                if (isset($sec_data['specs']) && is_array($sec_data['specs'])) {
+                                    foreach ($sec_data['specs'] as $spec_data) {
+                                        if (isset($spec_data['label']) && !empty($spec_data['label'])) {
+                                            $section->specifications()->create([
+                                                'label'         => $spec_data['label'],
+                                                'value'         => $spec_data['value'] ?? '',
+                                                'display_order' => $spec_data['display_order'] ?? 0,
+                                            ]);
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -247,7 +245,7 @@ class DecorativeProductAdminController extends Controller
             }
         }
 
-        // 4. Save Images
+        // 3. Save Images
         if ($request->hasFile('primary_image')) {
             // Delete old primary
             $product->primaryImage()->delete();

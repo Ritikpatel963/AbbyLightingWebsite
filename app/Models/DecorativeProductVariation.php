@@ -32,4 +32,9 @@ class DecorativeProductVariation extends Model
     {
         return $this->hasMany(DecorativeVariationImage::class, 'decorative_product_variation_id');
     }
+
+    public function specificationSections()
+    {
+        return $this->hasMany(DecorativeProductSpecSection::class, 'decorative_product_variation_id');
+    }
 }

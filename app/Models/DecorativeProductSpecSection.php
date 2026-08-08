@@ -11,9 +11,9 @@ class DecorativeProductSpecSection extends Model
 
     protected $guarded = ['id'];
 
-    public function product()
+    public function variation()
     {
-        return $this->belongsTo(DecorativeProduct::class, 'decorative_product_id');
+        return $this->belongsTo(DecorativeProductVariation::class, 'decorative_product_variation_id');
     }
 
     public function specifications()

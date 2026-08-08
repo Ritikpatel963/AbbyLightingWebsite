@@ -219,64 +219,55 @@
                                                     <option value="inactive" {{ $variation->status == 'inactive' ? 'selected' : '' }}>Inactive</option>
                                                 </select>
                                             </div>
-                                            <div class="col-md-2 text-right">
+                                             <div class="col-md-1 text-right">
                                                 <button type="button" class="btn btn-sm btn-danger remove-var">X</button>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Dynamic Specifications -->
-                    <div class="row mt-4">
-                        <div class="col-12">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h5>Specification Sections</h5>
-                                <button type="button" class="btn btn-sm btn-info" id="add-spec-section">Add Specification Section</button>
-                            </div>
-                            <div id="spec-sections-container">
-                                @foreach($product->specificationSections as $sIndex => $section)
-                                <div class="card bg-light mb-3 spec-section" data-sec-index="{{ $sIndex }}">
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-5">
-                                                <label>Section Title (e.g., Physical, Electrical)</label>
-                                                <input type="text" name="spec_sections[{{ $sIndex }}][title]" class="form-control" required value="{{ $section->title }}">
+                                        <!-- Specification Sections for this variation -->
+                                        <div class="mt-3 border-top pt-3">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <h6 class="mb-0">Specification Sections</h6>
+                                                <button type="button" class="btn btn-xs btn-info add-var-spec-section" data-var-index="{{ $vIndex }}">+ Add Section</button>
                                             </div>
-                                            <div class="col-md-5">
-                                                <label>Display Order</label>
-                                                <input type="number" name="spec_sections[{{ $sIndex }}][display_order]" class="form-control" value="{{ $section->display_order }}">
+                                            <div class="var-spec-sections-container" id="var-spec-container-{{ $vIndex }}">
+                                                @foreach($variation->specificationSections as $sIndex => $section)
+                                                <div class="card bg-light mb-2 var-spec-section" data-sec-index="{{ $sIndex }}">
+                                                    <div class="card-body p-2">
+                                                        <div class="row">
+                                                            <div class="col-md-5">
+                                                                <label>Section Title</label>
+                                                                <input type="text" name="variations[{{ $vIndex }}][spec_sections][{{ $sIndex }}][title]" class="form-control form-control-sm" required value="{{ $section->title }}">
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <label>Display Order</label>
+                                                                <input type="number" name="variations[{{ $vIndex }}][spec_sections][{{ $sIndex }}][display_order]" class="form-control form-control-sm" value="{{ $section->display_order }}">
+                                                            </div>
+                                                            <div class="col-md-3 d-flex align-items-end">
+                                                                <button type="button" class="btn btn-danger btn-sm remove-var-sec w-100">Remove Section</button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="mt-2">
+                                                            <table class="table table-sm table-bordered bg-white mb-1">
+                                                                <thead><tr>
+                                                                    <th>Label</th><th>Value</th><th>Order</th>
+                                                                    <th><button type="button" class="btn btn-xs btn-success add-var-spec-row" data-var-index="{{ $vIndex }}" data-sec-index="{{ $sIndex }}">+ Row</button></th>
+                                                                </tr></thead>
+                                                                <tbody class="var-spec-rows-container" id="var-spec-rows-{{ $vIndex }}-{{ $sIndex }}">
+                                                                    @foreach($section->specifications as $spIdx => $spec)
+                                                                    <tr>
+                                                                        <td><input type="text" name="variations[{{ $vIndex }}][spec_sections][{{ $sIndex }}][specs][{{ $spIdx }}][label]" class="form-control form-control-sm" required value="{{ $spec->label }}"></td>
+                                                                        <td><input type="text" name="variations[{{ $vIndex }}][spec_sections][{{ $sIndex }}][specs][{{ $spIdx }}][value]" class="form-control form-control-sm" value="{{ $spec->value }}"></td>
+                                                                        <td><input type="number" name="variations[{{ $vIndex }}][spec_sections][{{ $sIndex }}][specs][{{ $spIdx }}][display_order]" class="form-control form-control-sm" value="{{ $spec->display_order }}"></td>
+                                                                        <td><button type="button" class="btn btn-sm btn-danger remove-var-spec-row">X</button></td>
+                                                                    </tr>
+                                                                    @endforeach
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                @endforeach
                                             </div>
-                                            <div class="col-md-2 d-flex align-items-end">
-                                                <button type="button" class="btn btn-danger btn-sm remove-sec">Remove Section</button>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="mt-3">
-                                            <h6>Specifications</h6>
-                                            <table class="table table-sm table-bordered bg-white">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Label (e.g., Voltage)</th>
-                                                        <th>Value (e.g., 220V)</th>
-                                                        <th>Order</th>
-                                                        <th><button type="button" class="btn btn-sm btn-success add-spec-value" data-index="{{ $sIndex }}">Add Spec</button></th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody class="spec-values-container">
-                                                    @foreach($section->specifications as $vIndex => $spec)
-                                                    <tr>
-                                                        <td><input type="text" name="spec_sections[{{ $sIndex }}][specs][{{ $vIndex }}][label]" class="form-control form-control-sm" required value="{{ $spec->label }}"></td>
-                                                        <td><input type="text" name="spec_sections[{{ $sIndex }}][specs][{{ $vIndex }}][value]" class="form-control form-control-sm" value="{{ $spec->value }}"></td>
-                                                        <td><input type="number" name="spec_sections[{{ $sIndex }}][specs][{{ $vIndex }}][display_order]" class="form-control form-control-sm" value="{{ $spec->display_order }}"></td>
-                                                        <td><button type="button" class="btn btn-sm btn-danger remove-spec">X</button></td>
-                                                    </tr>
-                                                    @endforeach
-                                                </tbody>
-                                            </table>
                                         </div>
                                     </div>
                                 </div>
@@ -293,6 +284,17 @@
 </div>
 @stop
 
+@section('extra_css')
+<style>
+    .select2-container {
+        width: 100% !important;
+    }
+    .select2-search__field {
+        width: 100% !important;
+    }
+</style>
+@stop
+
 @section('extra_js')
 <script src="https://cdn.ckeditor.com/4.14.1/standard/ckeditor.js"></script>
 <script>
@@ -302,7 +304,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let attrIndex = {{ $product->attributes->count() }};
     let varIndex = {{ $product->variations->count() }};
-    let specSectionIndex = {{ $product->specificationSections->count() }};
 
     // Add Attribute
     document.getElementById('add-product-attribute').addEventListener('click', function() {
@@ -420,7 +421,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const suggestedSku = baseSku ? baseSku + '-' + comboNameParts.map(p => p.substring(0,3).toUpperCase()).join('-') : '';
 
             const varHtml = `
-                <div class="card border-info mb-2 variation-block">
+                <div class="card border-info mb-2 variation-block" data-var-index="${varIndex}">
                     <div class="card-body p-2">
                         <div class="row align-items-center">
                             <div class="col-md-2">
@@ -450,9 +451,17 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <option value="inactive">Inactive</option>
                                 </select>
                             </div>
-                            <div class="col-md-2 text-right">
+                            <div class="col-md-1 text-right">
                                 <button type="button" class="btn btn-sm btn-danger remove-var">X</button>
                             </div>
+                        </div>
+                        <!-- Specification Sections for this variation -->
+                        <div class="mt-3 border-top pt-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6 class="mb-0">Specification Sections</h6>
+                                <button type="button" class="btn btn-xs btn-info add-var-spec-section" data-var-index="${varIndex}">+ Add Section</button>
+                            </div>
+                            <div class="var-spec-sections-container" id="var-spec-container-${varIndex}"></div>
                         </div>
                     </div>
                 </div>
@@ -466,79 +475,87 @@ document.addEventListener('DOMContentLoaded', function() {
         alert('Manual variation adding is useful for editing, but initially try "Generate Variations" based on attributes!');
     });
 
-    // Specifications
-    document.getElementById('add-spec-section').addEventListener('click', function() {
-        const container = document.getElementById('spec-sections-container');
-        const secHtml = `
-            <div class="card bg-light mb-3 spec-section" data-sec-index="${specSectionIndex}">
-                <div class="card-body">
+    // Variation-level Specification Sections
+    function buildSpecSectionHtml(varIdx, secIdx) {
+        return `
+            <div class="card bg-light mb-2 var-spec-section" data-sec-index="${secIdx}">
+                <div class="card-body p-2">
                     <div class="row">
                         <div class="col-md-5">
-                            <label>Section Title (e.g., Physical, Electrical)</label>
-                            <input type="text" name="spec_sections[${specSectionIndex}][title]" class="form-control" required>
+                            <label>Section Title</label>
+                            <input type="text" name="variations[${varIdx}][spec_sections][${secIdx}][title]" class="form-control form-control-sm" required>
                         </div>
-                        <div class="col-md-5">
+                        <div class="col-md-4">
                             <label>Display Order</label>
-                            <input type="number" name="spec_sections[${specSectionIndex}][display_order]" class="form-control" value="0">
+                            <input type="number" name="variations[${varIdx}][spec_sections][${secIdx}][display_order]" class="form-control form-control-sm" value="0">
                         </div>
-                        <div class="col-md-2 d-flex align-items-end">
-                            <button type="button" class="btn btn-danger btn-sm remove-sec">Remove Section</button>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="button" class="btn btn-danger btn-sm remove-var-sec w-100">Remove Section</button>
                         </div>
                     </div>
-                    
-                    <div class="mt-3">
-                        <h6>Specifications</h6>
-                        <table class="table table-sm table-bordered bg-white">
-                            <thead>
-                                <tr>
-                                    <th>Label (e.g., Voltage)</th>
-                                    <th>Value (e.g., 220V)</th>
-                                    <th>Order</th>
-                                    <th><button type="button" class="btn btn-sm btn-success add-spec-value" data-index="${specSectionIndex}">Add Spec</button></th>
-                                </tr>
-                            </thead>
-                            <tbody class="spec-values-container">
-                                <!-- Specs appended here -->
-                            </tbody>
+                    <div class="mt-2">
+                        <table class="table table-sm table-bordered bg-white mb-1">
+                            <thead><tr>
+                                <th>Label</th><th>Value</th><th>Order</th>
+                                <th><button type="button" class="btn btn-xs btn-success add-var-spec-row" data-var-index="${varIdx}" data-sec-index="${secIdx}">+ Row</button></th>
+                            </tr></thead>
+                            <tbody class="var-spec-rows-container" id="var-spec-rows-${varIdx}-${secIdx}"></tbody>
                         </table>
                     </div>
                 </div>
             </div>
         `;
-        container.insertAdjacentHTML('beforeend', secHtml);
-        specSectionIndex++;
+    }
+
+    function buildSpecRowHtml(varIdx, secIdx, rowIdx) {
+        return `
+            <tr>
+                <td><input type="text" name="variations[${varIdx}][spec_sections][${secIdx}][specs][${rowIdx}][label]" class="form-control form-control-sm" required></td>
+                <td><input type="text" name="variations[${varIdx}][spec_sections][${secIdx}][specs][${rowIdx}][value]" class="form-control form-control-sm"></td>
+                <td><input type="number" name="variations[${varIdx}][spec_sections][${secIdx}][specs][${rowIdx}][display_order]" class="form-control form-control-sm" value="0"></td>
+                <td><button type="button" class="btn btn-sm btn-danger remove-var-spec-row">X</button></td>
+            </tr>
+        `;
+    }
+
+    const varSpecIndexes = {};
+
+    $(document).on('click', '.add-var-spec-section', function() {
+        const varIdx = $(this).data('var-index');
+        if (varSpecIndexes[varIdx] === undefined) {
+            // Seed from existing rendered sections so indexes don't collide
+            const container = document.getElementById('var-spec-container-' + varIdx);
+            varSpecIndexes[varIdx] = container ? container.children.length : 0;
+        }
+        const secIdx = varSpecIndexes[varIdx];
+        const container = document.getElementById('var-spec-container-' + varIdx);
+        container.insertAdjacentHTML('beforeend', buildSpecSectionHtml(varIdx, secIdx));
+        varSpecIndexes[varIdx]++;
     });
 
-    document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('remove-sec')) {
-            e.target.closest('.spec-section').remove();
-        }
-        if (e.target.classList.contains('add-spec-value')) {
-            const sIndex = e.target.getAttribute('data-index');
-            const tbody = e.target.closest('.card-body').querySelector('.spec-values-container');
-            // Generate unique index for value
-            const vIndex = new Date().getTime(); 
-            const tr = `
-                <tr>
-                    <td><input type="text" name="spec_sections[${sIndex}][specs][${vIndex}][label]" class="form-control form-control-sm" required></td>
-                    <td><input type="text" name="spec_sections[${sIndex}][specs][${vIndex}][value]" class="form-control form-control-sm"></td>
-                    <td><input type="number" name="spec_sections[${sIndex}][specs][${vIndex}][display_order]" class="form-control form-control-sm" value="0"></td>
-                    <td><button type="button" class="btn btn-sm btn-danger remove-spec">X</button></td>
-                </tr>
-            `;
-            tbody.insertAdjacentHTML('beforeend', tr);
-        }
-        if (e.target.classList.contains('remove-spec')) {
-            e.target.closest('tr').remove();
-        }
+    $(document).on('click', '.remove-var-sec', function() {
+        $(this).closest('.var-spec-section').remove();
     });
-});
 
-$(document).ready(function() {
+    $(document).on('click', '.add-var-spec-row', function() {
+        const varIdx = $(this).data('var-index');
+        const secIdx = $(this).data('sec-index');
+        const tbody = document.getElementById('var-spec-rows-' + varIdx + '-' + secIdx);
+        const rowIdx = tbody.children.length;
+        tbody.insertAdjacentHTML('beforeend', buildSpecRowHtml(varIdx, secIdx, rowIdx));
+    });
+
+    $(document).on('click', '.remove-var-spec-row', function() {
+        $(this).closest('tr').remove();
+    });
+
+    // Select2
     $('.select2').select2({
         placeholder: "Select Categories",
-        allowClear: true
+        allowClear: true,
+        width: '100%'
     });
+
 });
 
 function previewImage(input, previewId) {

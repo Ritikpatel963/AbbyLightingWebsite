@@ -41,9 +41,4 @@ class DecorativeProduct extends Model
     {
         return $this->hasMany(DecorativeProductVariation::class, 'decorative_product_id');
     }
-
-    public function specificationSections()
-    {
-        return $this->hasMany(DecorativeProductSpecSection::class, 'decorative_product_id');
-    }
 }

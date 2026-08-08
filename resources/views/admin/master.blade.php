@@ -44,6 +44,7 @@
 
         <link rel="stylesheet" type="text/css" href="{{asset('adminlte/css/style.css')}}">
         <!-- END: Custom CSS-->
+        @yield('extra_css')
     </head>
     <body class="vertical-layout vertical-menu 2-columns navbar-sticky menu-expanded page-scrolled pace-done" data-menu="vertical-menu" data-col="2-columns">
 

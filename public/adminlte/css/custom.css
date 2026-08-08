@@ -118,3 +118,11 @@ table#productImages-table, table#varientImages-table, table#iesFiles-table, tabl
     overflow: visible !important;
     min-height: calc(100vh - 4rem);
 }
+
+/* Fix Select2 inline width override */
+.select2-container {
+    width: 100% !important;
+}
+.select2-search__field {
+    width: 100% !important;
+}
