@@ -88,32 +88,7 @@
                                 @endif
                             </div>
                         </div>
-                        <div class="col-md-6 form-group">
-                            <label for="thumbnail">Thumbnail</label>
-                            <div class="custom-file-upload">
-                                <span>Click to Upload Thumbnail</span>
-                                <input type="file" name="thumbnail" accept="image/*" onchange="previewImage(this, 'thumbnail-preview')">
-                            </div>
-                            <div class="mt-2" id="thumbnail-preview" style="{{ $product->thumbnail ? 'display: block;' : 'display: none;' }}">
-                                @if($product->thumbnail)
-                                <div class="img-preview-box"><img src="{{ asset('uploads/decorative_products/'.$product->thumbnail) }}"></div>
-                                @else
-                                <div class="img-preview-box"><img src=""></div>
-                                @endif
-                            </div>
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label for="brochure">Brochure (Optional)</label>
-                            <div class="custom-file-upload">
-                                <span>Click to Upload Brochure</span>
-                                <input type="file" name="brochure" accept=".pdf,.doc,.docx">
-                            </div>
-                            @if($product->brochure)
-                            <div class="mt-1">
-                                <a href="{{ asset('uploads/decorative_products/'.$product->brochure) }}" target="_blank" class="badge badge-info">View Current Brochure</a>
-                            </div>
-                            @endif
-                        </div>
+
                         <div class="col-md-12 form-group">
                             <label for="gallery_images">Add Gallery Images</label>
                             <div class="custom-file-upload">
