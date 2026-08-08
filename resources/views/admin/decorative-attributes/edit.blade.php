@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             </div>
                         </div>
                     </div>
-                    <input type="text" name="values[${valueIndex}][hex_code]" class="form-control final-color-output" placeholder="#ffffff">
+                    <input type="text" name="values[${valueIndex}][hex_code]" class="form-control final-color-output" placeholder="#ffffff" value="#ffffff">
                 </div>
             `;
         } else {
@@ -207,7 +207,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             const color2 = container.querySelector('.color-2').value;
             const angle = container.querySelector('.gradient-angle').value || 45;
-            output.value = \`linear-gradient(\${angle}deg, \${color1}, \${color2})\`;
+            output.value = `linear-gradient(${angle}deg, ${color1}, ${color2})`;
         }
     }
 });
