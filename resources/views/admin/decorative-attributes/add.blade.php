@@ -1,50 +1,46 @@
 @extends('admin.page')
 @section('title', $title)
+
+@section('extra_css')
+<link rel="stylesheet" href="{{ asset('adminlte/css/product-variations.css') }}">
+@stop
+
 @section('content_header')
 <div class="row mb-2">
     <div class="col-sm-12 col-md-12 col-lg-12 d-flex justify-content-between align-items-center">
         <h1 class="m-0">{{ $title }}</h1>
-        <a href="{{ route('decorative_attribute_admin') }}" class="btn btn-secondary"><i
-                class="ft-arrow-left mr-1"></i>Back to List</a>
+        <a href="{{ route('decorative_attribute_admin') }}" class="btn btn-secondary"><i class="ft-arrow-left mr-1"></i>Back to List</a>
     </div>
 </div>
 @stop
+
 @section('content')
 <div class="row">
     <div class="col-12">
-        <div class="card">
-            <div class="card-body">
+        <div class="card shadow-sm border-0 rounded-lg">
+            <div class="p-4">
                 <form action="{{ $action }}" method="POST">
                     @csrf
 
+                    <h4 class="section-title mb-4">Attribute Details</h4>
                     <div class="row">
                         <div class="col-md-6 form-group">
-                            <label>Attribute Name (e.g., Colour, Size)</label>
-                            <input type="text" name="name" class="form-control" required
-                                placeholder="Enter attribute name">
+                            <label class="font-weight-bold text-muted">Attribute Name (e.g., Colour, Size)</label>
+                            <input type="text" name="name" class="form-control" required placeholder="Enter attribute name">
                         </div>
                     </div>
 
-                    <hr>
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5>Attribute Values</h5>
-                        <button type="button" class="btn btn-sm btn-info" id="add-value">Add Value</button>
+                    <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+                        <h4 class="section-title mb-0">Attribute Values</h4>
+                        <button type="button" class="btn btn-premium btn-info" id="add-value"><i class="ft-plus mr-1"></i> Add Value</button>
                     </div>
 
-                    <table class="table table-bordered table-sm">
-                        <thead>
-                            <tr>
-                                <th>Value Name (e.g., Red, Small)</th>
-                                <th>Hex Code (optional)</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="values-container">
-                            <!-- JS injected values -->
-                        </tbody>
-                    </table>
+                    <div id="values-container" class="mb-4">
+                        <!-- JS injected values -->
+                    </div>
 
-                    <button type="submit" class="btn btn-primary mt-3">Save Attribute</button>
+                    <hr class="mt-4 mb-4">
+                    <button type="submit" class="btn btn-premium btn-primary"><i class="ft-save mr-1"></i> Save Attribute</button>
                 </form>
             </div>
         </div>
@@ -65,46 +61,54 @@
                 hexHtml = `
                 <div class="color-input-container">
                     <div class="mb-1 d-flex align-items-center" style="gap: 5px;">
-                        <select class="form-control form-control-sm color-type-select" style="width: auto;">
+                        <select class="form-control color-type-select" style="width: auto;">
                             <option value="solid">Solid</option>
                             <option value="gradient">Gradient</option>
                         </select>
                         <div class="solid-picker">
-                            <input type="color" class="form-control form-control-sm p-1 color-1" style="max-width: 40px; cursor: pointer;" value="#ffffff">
+                            <input type="color" class="form-control p-1 color-1" style="max-width: 50px; cursor: pointer; height: 38px;" value="#ffffff">
                         </div>
                         <div class="gradient-pickers" style="display: none; align-items: center; gap: 5px;">
-                            <input type="color" class="form-control form-control-sm p-1 color-1" style="max-width: 40px; cursor: pointer;" value="#ffffff">
-                            <input type="color" class="form-control form-control-sm p-1 color-2" style="max-width: 40px; cursor: pointer;" value="#000000">
-                            <div class="input-group input-group-sm" style="width: 80px;">
+                            <input type="color" class="form-control p-1 color-1" style="max-width: 50px; cursor: pointer; height: 38px;" value="#ffffff">
+                            <input type="color" class="form-control p-1 color-2" style="max-width: 50px; cursor: pointer; height: 38px;" value="#000000">
+                            <div class="input-group" style="width: 100px;">
                                 <input type="number" class="form-control gradient-angle" value="45">
                                 <div class="input-group-append"><span class="input-group-text">deg</span></div>
                             </div>
                         </div>
                     </div>
-                    <input type="text" name="values[${valueIndex}][hex_code]" class="form-control form-control-sm final-color-output" placeholder="#ffffff">
+                    <input type="text" name="values[${valueIndex}][hex_code]" class="form-control final-color-output" placeholder="#ffffff">
                 </div>
             `;
             } else {
-                hexHtml = `<input type="text" name="values[${valueIndex}][hex_code]" class="form-control form-control-sm" placeholder="Leave blank for non-colors">`;
+                hexHtml = `<input type="text" name="values[${valueIndex}][hex_code]" class="form-control" placeholder="Leave blank for non-colors">`;
             }
 
             const container = document.getElementById('values-container');
             const tr = `
-            <tr>
-                <td><input type="text" name="values[${valueIndex}][name]" class="form-control form-control-sm" required placeholder="e.g. White"></td>
-                <td>
+            <div class="spec-card p-3 mb-3 shadow-sm rounded border d-flex justify-content-between align-items-center value-row">
+                <div class="flex-grow-1 mr-3">
+                    <label class="font-weight-bold text-muted small">Value Name (e.g., Red, Small)</label>
+                    <input type="text" name="values[${valueIndex}][name]" class="form-control" required placeholder="e.g. White">
+                </div>
+                <div class="flex-grow-1 mr-3">
+                    <label class="font-weight-bold text-muted small">Value Color/Code</label>
                     ${hexHtml}
-                </td>
-                <td><button type="button" class="btn btn-sm btn-danger remove-val">X</button></td>
-            </tr>
+                </div>
+                <div>
+                    <label class="d-block">&nbsp;</label>
+                    <button type="button" class="btn btn-danger remove-val"><i class="ft-trash-2"></i></button>
+                </div>
+            </div>
         `;
             container.insertAdjacentHTML('beforeend', tr);
             valueIndex++;
         });
 
         document.addEventListener('click', function (e) {
-            if (e.target.classList.contains('remove-val')) {
-                e.target.closest('tr').remove();
+            const removeBtn = e.target.closest('.remove-val');
+            if (removeBtn) {
+                removeBtn.closest('.value-row').remove();
             }
         });
 
@@ -146,10 +150,11 @@
             } else {
                 const color2 = container.querySelector('.color-2').value;
                 const angle = container.querySelector('.gradient-angle').value || 45;
-                output.value = `linear-gradient(${angle}deg, ${color1}, ${color2})`;
+                output.value = \`linear-gradient(\${angle}deg, \${color1}, \${color2})\`;
             }
         }
     });
 </script>
 @stop
+
 @stop
