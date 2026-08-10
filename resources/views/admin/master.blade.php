@@ -43,6 +43,7 @@
         <link rel="stylesheet" type="text/css" href="{{asset('adminlte/css/custom.css')}}">
 
         <link rel="stylesheet" type="text/css" href="{{asset('adminlte/css/style.css')}}">
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" />
         <!-- END: Custom CSS-->
         @yield('extra_css')
     </head>
@@ -56,7 +57,6 @@
     @include("admin.include.js_message")
     <script src="{{asset('adminlte/vendors/js/vendors.min.js')}}"></script>
     <!-- <script src="http://code.jquery.com/jquery-1.8.3.min.js" type="text/javascript"></script> -->
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" />
     <script type="text/javascript"  src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/5.4.0/Rx.js"></script>
     <script src="https://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
