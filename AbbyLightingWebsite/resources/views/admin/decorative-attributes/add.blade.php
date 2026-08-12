@@ -60,28 +60,31 @@ document.addEventListener('DOMContentLoaded', function () {
         let hexHtml = '';
         if (isColor) {
             hexHtml = `
-            <div class='color-input-container'>
-                <div class='mb-1 d-flex align-items-center' style='gap: 5px;'>
-                    <select class='form-control color-type-select' style='width: auto;'>
-                        <option value='solid'>Solid</option>
-                        <option value='gradient'>Gradient</option>
-                    </select>
-                    <div class='solid-picker'>
-                        <input type='color' class='form-control p-1 color-1' style='max-width: 50px; cursor: pointer; height: 38px;' value='#ffffff'>
-                    </div>
-                    <div class='gradient-pickers' style='display: none; align-items: center; gap: 5px;'>
-                        <input type='color' class='form-control p-1 color-1' style='max-width: 50px; cursor: pointer; height: 38px;' value='#ffffff'>
-                        <input type='color' class='form-control p-1 color-2' style='max-width: 50px; cursor: pointer; height: 38px;' value='#000000'>
-                        <div class='input-group' style='width: 100px;'>
-                            <input type='number' class='form-control gradient-angle' value='45'>
-                            <div class='input-group-append'><span class='input-group-text'>deg</span></div>
+            <div class='flex-grow-1 mr-3'>
+                <label class='font-weight-bold text-muted small'>Value Color/Code</label>
+                <div class='color-input-container'>
+                    <div class='mb-1 d-flex align-items-center' style='gap: 5px;'>
+                        <select class='form-control color-type-select' style='width: auto;'>
+                            <option value='solid'>Solid</option>
+                            <option value='gradient'>Gradient</option>
+                        </select>
+                        <div class='solid-picker'>
+                            <input type='color' class='form-control p-1 color-1' style='max-width: 50px; cursor: pointer; height: 38px;' value='#ffffff'>
+                        </div>
+                        <div class='gradient-pickers' style='display: none; align-items: center; gap: 5px;'>
+                            <input type='color' class='form-control p-1 color-1' style='max-width: 50px; cursor: pointer; height: 38px;' value='#ffffff'>
+                            <input type='color' class='form-control p-1 color-2' style='max-width: 50px; cursor: pointer; height: 38px;' value='#000000'>
+                            <div class='input-group' style='width: 100px;'>
+                                <input type='number' class='form-control gradient-angle' value='45'>
+                                <div class='input-group-append'><span class='input-group-text'>deg</span></div>
+                            </div>
                         </div>
                     </div>
+                    <input type='text' name='values[${valueIndex}][hex_code]' class='form-control final-color-output' placeholder='#ffffff' value='#ffffff'>
                 </div>
-                <input type='text' name='values[${valueIndex}][hex_code]' class='form-control final-color-output' placeholder='#ffffff' value='#ffffff'>
             </div>`;
         } else {
-            hexHtml = `<input type='text' name='values[${valueIndex}][hex_code]' class='form-control' placeholder='Leave blank for non-colors'>`;
+            hexHtml = `<input type='hidden' name='values[${valueIndex}][hex_code]' value=''>`;
         }
 
         const container = document.getElementById('values-container');
@@ -91,10 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <label class='font-weight-bold text-muted small'>Value Name (e.g., Red, Small)</label>
                 <input type='text' name='values[${valueIndex}][name]' class='form-control' required placeholder='e.g. White'>
             </div>
-            <div class='flex-grow-1 mr-3'>
-                <label class='font-weight-bold text-muted small'>Value Color/Code</label>
-                ${hexHtml}
-            </div>
+            ${hexHtml}
             <div>
                 <label class='d-block'>&nbsp;</label>
                 <button type='button' class='btn btn-danger remove-val'><i class='ft-trash-2'></i></button>

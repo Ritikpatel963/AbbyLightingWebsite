@@ -60,9 +60,9 @@
                                     <input type="hidden" name="values[{{ $index }}][id]" value="{{ $val->id }}">
                                     <input type="text" name="values[{{ $index }}][name]" class="form-control" required value="{{ $val->name }}">
                                 </div>
+                                @if($isColor)
                                 <div class="flex-grow-1 mr-3">
                                     <label class="font-weight-bold text-muted small">Value Color/Code</label>
-                                    @if($isColor)
                                         <div class="color-input-container">
                                             <div class="mb-1 d-flex align-items-center" style="gap: 5px;">
                                                 <select class="form-control color-type-select" style="width: auto;">
@@ -83,10 +83,10 @@
                                             </div>
                                             <input type="text" name="values[{{ $index }}][hex_code]" class="form-control final-color-output" placeholder="#ffffff" value="{{ $valHex }}">
                                         </div>
-                                    @else
-                                        <input type="text" name="values[{{ $index }}][hex_code]" class="form-control" placeholder="Leave blank for non-colors" value="{{ $val->hex_code }}">
-                                    @endif
                                 </div>
+                                @else
+                                    <input type="hidden" name="values[{{ $index }}][hex_code]" value="{{ $val->hex_code }}">
+                                @endif
                                 <div>
                                     <label class="d-block">&nbsp;</label>
                                     <button type="button" class="btn btn-danger remove-val"><i class="ft-trash-2"></i></button>
