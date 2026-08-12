@@ -116,6 +116,7 @@ class ProjectAdminController extends Controller
         $value = [
             'name' => $request->name,
             'location' => $request->location,
+            'type_id' => $request->type_id ?? null, // Nullable now
             'type' => $request->type,
             'description' => $request->description,
             'sequence' => $request->sequence ?? 1,
@@ -220,6 +221,7 @@ class ProjectAdminController extends Controller
         $update_array = array(
             'name' => $request->name,
             'location' => $request->location,
+            'type_id' => $request->type_id ?? null, // Nullable
             'type' => $request->type,
             'block_column' => $request->block_column,
             'description' => $request->description,

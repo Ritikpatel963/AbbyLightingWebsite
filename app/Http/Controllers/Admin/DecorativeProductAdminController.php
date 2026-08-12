@@ -264,7 +264,8 @@ class DecorativeProductAdminController extends Controller
     private function uploadImage($file, $path)
     {
         $name = time() . '-' . $file->getClientOriginalName();
-        $file->move(public_path('uploads/' . $path), $name);
+        // Store in storage/app/public/decorative_products/
+        $file->storeAs('public/' . $path, $name);
         return $name;
     }
 }

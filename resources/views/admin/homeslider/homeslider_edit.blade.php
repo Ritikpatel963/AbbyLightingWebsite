@@ -63,6 +63,34 @@
                                 <input type="text" id="url" name="url" class="form-control" placeholder="" value="{{@$slider->url}}">
                             </div>
                         </div>
+                        
+                        <div class="form-group row">
+                            <label for="inputName" class="col-sm-3 control-label">Heading</label>
+                            <div class="col-sm-6">
+                                <input type="text" id="heading" name="heading" class="form-control" placeholder="Enter slide heading" value="{{@$slider->heading}}">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group row">
+                            <label for="inputName" class="col-sm-3 control-label">Description</label>
+                            <div class="col-sm-6">
+                                <textarea id="description" name="description" class="form-control" rows="3" placeholder="Enter slide description">{{@$slider->description}}</textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group row">
+                            <label for="inputName" class="col-sm-3 control-label">Button Text</label>
+                            <div class="col-sm-6">
+                                <input type="text" id="button_text" name="button_text" class="form-control" placeholder="e.g., Learn More" value="{{@$slider->button_text}}">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group row">
+                            <label for="inputName" class="col-sm-3 control-label">Button Link</label>
+                            <div class="col-sm-6">
+                                <input type="text" id="button_link" name="button_link" class="form-control" placeholder="e.g., /products" value="{{@$slider->button_link}}">
+                            </div>
+                        </div>
                        
                         <!-- <div class="form-group row">
                             <label for="inputName" class="col-sm-3 control-label">Thumbnail Image<i class="text-danger">*</i></label>

@@ -76,12 +76,13 @@
                     </li>
                 @else
                     {{-- Normal admin → full menu --}}
-                    <li class="nav-item {{(@$main_module == 'Contact Form') ? 'active' : ''}}"><a href="{{route('contact_form_admin')}}"><i class="fa fa-list-alt"></i><span class="menu-title" data-i18n="Contact Forms">Contact Forms</span></a></li>
                     <li class="nav-item {{(@$main_module == 'Category') ? 'active' : ''}}"><a href="{{route('category_admin')}}"><i class="fa fa-th-list"></i><span class="menu-title" data-i18n="Category">Categories</span></a></li>
                     <!-- <li class="nav-item {{(@$main_module == 'Families') ? 'active' : ''}}"><a href="{{route('family_admin')}}"><i class="icon-users"></i><span class="menu-title" data-i18n="Families">Families</span></a></li> -->
                     <li class="nav-item {{(@$main_module == 'Tags') ? 'active' : ''}}"><a href="{{route('tag_admin')}}"><i class="icon-tag"></i><span class="menu-title" data-i18n="Tags">Tags</span></a></li>
                     <li class="nav-item {{(@$main_module == 'Sub Tags') ? 'active' : ''}}"><a href="{{route('sub_tag_admin')}}"><i class="icon-tag"></i><span class="menu-title" data-i18n="Tags">Sub Tags</span></a></li>
                     <li class="nav-item {{(@$main_module == 'Product') ? 'active' : ''}}"><a href="{{route('product_admin')}}"><i class="ft-package"></i><span class="menu-title" data-i18n="Products">Products</span></a></li>
+                    <li class="nav-item {{(@$main_module == 'Icons') ? 'active' : ''}}"><a href="{{route('icon_admin')}}"><i class="ft-package"></i><span class="menu-title" data-i18n="Icons">Icons</span></a></li>
+                    <li class="nav-item {{(@$main_module == 'Attributes') ? 'active' : ''}}"><a href="{{route('attribute_admin')}}"><i class="fa fa-list-alt"></i><span class="menu-title" data-i18n="Attributes">Attributes</span></a></li>
                     
                     <li class="nav-item has-sub {{ (@$main_module == 'Decorative Product') ? 'open' : '' }}">
                         <a href="#"><i class="ft-package"></i><span class="menu-title" data-i18n="Decorative">Decorative Products</span></a>
@@ -92,16 +93,43 @@
                             <li class="{{(Route::currentRouteName() == 'decorative_category_admin' || Route::currentRouteName() == 'decorative_category_admin.add' || Route::currentRouteName() == 'decorative_category_admin.edit') ? 'active' : ''}}"><a class="menu-item" href="{{route('decorative_category_admin')}}">Categories</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item {{(@$main_module == 'Icons') ? 'active' : ''}}"><a href="{{route('icon_admin')}}"><i class="ft-package"></i><span class="menu-title" data-i18n="Icons">Icons</span></a></li>
-
-                    <li class="nav-item {{(@$main_module == 'Attributes') ? 'active' : ''}}"><a href="{{route('attribute_admin')}}"><i class="fa fa-list-alt"></i><span class="menu-title" data-i18n="Attributes">Attributes</span></a></li>
-                    <li class="nav-item {{(@$main_module == 'Catalog') ? 'active' : ''}}"><a href="{{route('catalog_admin')}}"><i class="ft-clipboard"></i><span class="menu-title" data-i18n="Catalog">Catalog Download Contacts</span></a></li>
-                    <li class="nav-item {{(@$main_module == 'Project') ? 'active' : ''}}"><a href="{{route('project_admin')}}"><i class="ft-monitor"></i><span class="menu-title" data-i18n="Project">Projects</span></a></li>
-                    <li class="nav-item {{(@$main_module == 'Events') ? 'active' : ''}}"><a href="{{route('event_admin')}}"><i class="ft-package"></i><span class="menu-title" data-i18n="Events">Events</span></a></li>
-                    <li class="nav-item {{(@$main_module == 'Jobs') ? 'active' : ''}}"><a href="{{route('job_admin')}}"><i class="ft-package"></i><span class="menu-title" data-i18n="Events">Jobs</span></a></li>
-                    <li class="nav-item {{(@$main_module == 'Clients') ? 'active' : ''}}"><a href="{{route('client_admin')}}"><i class="ft-package"></i><span class="menu-title" data-i18n="Events">Clients</span></a></li>
-                    <li class="nav-item {{(@$main_module == 'Home') ? 'active' : ''}}"><a href="{{route('homeslider_admin')}}"><i class="ft-package"></i><span class="menu-title" data-i18n="Home">Home Sliders</span></a></li>
-                    <li class="nav-item {{(@$main_module == 'Subscriptions') ? 'active' : ''}}"><a href="{{route('subscriptions_admin')}}"><i class="fa fa-list-alt"></i><span class="menu-title" data-i18n="Subscriptions">Subscriptions</span></a></li>
+                    
+                    {{-- PORTFOLIO SECTION --}}
+                    <li class="nav-item has-sub {{ (in_array(@$main_module, ['Project', 'Clients'])) ? 'open' : '' }}">
+                        <a href="#"><i class="ft-briefcase"></i><span class="menu-title" data-i18n="Portfolio">Portfolio</span></a>
+                        <ul class="menu-content">
+                            <li class="{{(@$main_module == 'Project') ? 'active' : ''}}"><a class="menu-item" href="{{route('project_admin')}}">Projects</a></li>
+                            <li class="{{(@$main_module == 'Clients') ? 'active' : ''}}"><a class="menu-item" href="{{route('client_admin')}}">Clients</a></li>
+                        </ul>
+                    </li>
+                    
+                    {{-- MEDIA & UPDATES SECTION --}}
+                    <li class="nav-item has-sub {{ (in_array(@$main_module, ['News', 'Events', 'Jobs'])) ? 'open' : '' }}">
+                        <a href="#"><i class="ft-globe"></i><span class="menu-title" data-i18n="Media">Media & Updates</span></a>
+                        <ul class="menu-content">
+                            <li class="{{(@$main_module == 'News') ? 'active' : ''}}"><a class="menu-item" href="{{route('admin.news-items.index')}}">News</a></li>
+                            <li class="{{(@$main_module == 'Events') ? 'active' : ''}}"><a class="menu-item" href="{{route('event_admin')}}">Events</a></li>
+                            <li class="{{(@$main_module == 'Jobs') ? 'active' : ''}}"><a class="menu-item" href="{{route('job_admin')}}">Jobs</a></li>
+                        </ul>
+                    </li>
+                    
+                    {{-- INQUIRIES SECTION --}}
+                    <li class="nav-item has-sub {{ (in_array(@$main_module, ['Contact Form', 'Catalog', 'Subscriptions'])) ? 'open' : '' }}">
+                        <a href="#"><i class="ft-mail"></i><span class="menu-title" data-i18n="Inquiries">Inquiries</span></a>
+                        <ul class="menu-content">
+                            <li class="{{(@$main_module == 'Contact Form') ? 'active' : ''}}"><a class="menu-item" href="{{route('contact_form_admin')}}">Contact Forms</a></li>
+                            <li class="{{(@$main_module == 'Catalog') ? 'active' : ''}}"><a class="menu-item" href="{{route('catalog_admin')}}">Catalog Downloads</a></li>
+                            <li class="{{(@$main_module == 'Subscriptions') ? 'active' : ''}}"><a class="menu-item" href="{{route('subscriptions_admin')}}">Subscriptions</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-sub {{ (@$main_module == 'Settings') ? 'open' : '' }}">
+                        <a href="#"><i class="ft-settings"></i><span class="menu-title" data-i18n="Settings">Settings</span></a>
+                        <ul class="menu-content">
+                            <li class="{{(Route::currentRouteName() == 'homeslider_admin' || Route::currentRouteName() == 'homeslider_admin.add' || Route::currentRouteName() == 'homeslider_admin.edit') ? 'active' : ''}}"><a class="menu-item" href="{{route('homeslider_admin')}}">Home Sliders</a></li>
+                            <li class="{{(Route::currentRouteName() == 'admin.manufacturing.edit') ? 'active' : ''}}"><a class="menu-item" href="{{route('admin.manufacturing.edit', 1)}}">Manufacturing Section</a></li>
+                        </ul>
+                    </li>
 
                     <!-- <li class="nav-item {{(@$main_module == 'Upload CSV') ? 'active' : ''}}"><a href="{{route('upload_csv_admin')}}"><i class="icon-cloud-upload"></i><span class="menu-title" data-i18n="Upload CSV">Upload CSV</span></a></li> -->
                 @endif

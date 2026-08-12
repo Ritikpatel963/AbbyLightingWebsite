@@ -10,5 +10,14 @@ class HomeSlider extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['path', 'for_mobile', 'sort_order', 'url'];
+    protected $fillable = [
+        'path', 
+        'for_mobile', 
+        'sort_order', 
+        'url',
+        'heading',
+        'description',
+        'button_text',
+        'button_link'
+    ];
 }

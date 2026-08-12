@@ -18,7 +18,7 @@ class HomeSliderController extends Controller
     public function __construct()
     {
        // $this->middleware('admin');
-        $this->main_module = 'Home Sliders';
+        $this->main_module = 'Settings';
         $current = Carbon::now();
         $this->currentDateTime = $current->toDateTimeString();
     }
@@ -53,7 +53,11 @@ class HomeSliderController extends Controller
         $validation_array = array(
             'path'=>'required|image',
             'for_mobile'=>'required|boolean',
-            'sort_order'=>'required|numeric'
+            'sort_order'=>'required|numeric',
+            'heading'=>'nullable|string|max:255',
+            'description'=>'nullable|string',
+            'button_text'=>'nullable|string|max:100',
+            'button_link'=>'nullable|string|max:255'
         );
 
         // CHECK SERVER SIDE VALIDATION
@@ -64,6 +68,10 @@ class HomeSliderController extends Controller
             'for_mobile' => $request->for_mobile,
             'url' => $request->url ? $request->url : NULL,
             'sort_order' => $request->sort_order,
+            'heading' => $request->heading,
+            'description' => $request->description,
+            'button_text' => $request->button_text,
+            'button_link' => $request->button_link,
             'created_at' => $this->currentDateTime,
             'updated_at' => $this->currentDateTime
         ];
@@ -87,6 +95,10 @@ class HomeSliderController extends Controller
             'for_mobile' => $request->for_mobile,
             'url' => $request->url ? $request->url : NULL,
             'sort_order' => $request->sort_order,
+            'heading' => $request->heading,
+            'description' => $request->description,
+            'button_text' => $request->button_text,
+            'button_link' => $request->button_link,
             'updated_at' => $this->currentDateTime
         );
 

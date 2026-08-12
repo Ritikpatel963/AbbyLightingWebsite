@@ -289,6 +289,23 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('/homeslider/insert', [AdminHomeSliderController::class, 'insert'])->name('homeslider_admin.insert');
         Route::post('/homeslider/update/{any}', [AdminHomeSliderController::class, 'update'])->name('homeslider_admin.update');
 
+        /********************MANUFACTURING SECTION / HOMEPAGE SETTINGS********************/
+        Route::get('/manufacturing-section', [App\Http\Controllers\Admin\ManufacturingSectionController::class, 'index'])->name('admin.manufacturing.index');
+        Route::get('/homepage-settings/{id?}', [App\Http\Controllers\Admin\ManufacturingSectionController::class, 'edit'])->name('admin.manufacturing.edit');
+        Route::put('/homepage-settings/update', [App\Http\Controllers\Admin\ManufacturingSectionController::class, 'update'])->name('admin.manufacturing.update');
+
+        /********************NEWS SECTION********************/
+        Route::get('/news-section-settings/{id?}', [App\Http\Controllers\Admin\NewsSectionController::class, 'edit'])->name('admin.news-section.edit');
+        Route::put('/news-section-settings/update', [App\Http\Controllers\Admin\NewsSectionController::class, 'update'])->name('admin.news-section.update');
+
+        /********************NEWS ITEMS********************/
+        Route::get('/news-items', [App\Http\Controllers\Admin\NewsItemController::class, 'index'])->name('admin.news-items.index');
+        Route::get('/news-items/add', [App\Http\Controllers\Admin\NewsItemController::class, 'add'])->name('admin.news-items.add');
+        Route::post('/news-items/store', [App\Http\Controllers\Admin\NewsItemController::class, 'store'])->name('admin.news-items.store');
+        Route::get('/news-items/edit/{id}', [App\Http\Controllers\Admin\NewsItemController::class, 'edit'])->name('admin.news-items.edit');
+        Route::put('/news-items/update/{id}', [App\Http\Controllers\Admin\NewsItemController::class, 'update'])->name('admin.news-items.update');
+        Route::delete('/news-items/delete/{id}', [App\Http\Controllers\Admin\NewsItemController::class, 'delete'])->name('admin.news-items.delete');
+
         /********************DECORATIVE CATEGORIES********************/
         Route::get('/decorative-categories', [App\Http\Controllers\Admin\DecorativeCategoryController::class, 'index'])->name('decorative_category_admin');
         Route::get('/decorative-categories/add', [App\Http\Controllers\Admin\DecorativeCategoryController::class, 'add'])->name('decorative_category_admin.add');

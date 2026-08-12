@@ -81,6 +81,8 @@ class EventAdminController extends Controller
         $Val = [
             'name' => $request->name,
             'slug' => $request->slug,
+            'source' => $request->source,
+            'source_link' => $request->source_link,
             'location' => $request->location,
             'description' => $request->description,
             'created_at' => $this->currentDateTime,
@@ -158,6 +160,8 @@ class EventAdminController extends Controller
         $update_array = array(
             'name' => $request->name,
             'slug'=> $request->slug,
+            'source' => $request->source,
+            'source_link' => $request->source_link,
             'location' => $request->location,
             'description' => $request->description,
             'updated_by' => Auth::guard('admin')->user()->id,

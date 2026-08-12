@@ -28,6 +28,22 @@
                         </div>
                     </div>
                     <div class="form-group row">
+                        <label for="inputSource" class="col-sm-3 control-label">Source / Publication</label>
+                        <div class="col-sm-5">
+                            <input type="text" id="source" name="source" class="form-control" placeholder="e.g., ARCHITECTURAL DIGEST, ELLE DECOR INDIA"
+                                value="{{ old('source',@$event->source) }}">
+                            <small class="form-text text-muted">Publication or source name for the news article</small>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="inputSourceLink" class="col-sm-3 control-label">Source Link</label>
+                        <div class="col-sm-9">
+                            <input type="url" id="source_link" name="source_link" class="form-control" placeholder="https://..."
+                                value="{{ old('source_link',@$event->source_link) }}">
+                            <small class="form-text text-muted">External URL to the original article</small>
+                        </div>
+                    </div>
+                    <div class="form-group row">
                         <label for="inputName" class="col-sm-3 control-label">Description</label>
                         <div class="col-sm-9">
                             <div class="text-muted">
