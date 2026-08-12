@@ -10,10 +10,10 @@
                     <h4>{{ $title }}</h4>
                 </span>
             </div>
-            <button class="btn btn-primary mr-2">
+            <button class="btn btn-premium mr-2">
                 <span class="d-flex align-items-center">
                     <i class="ft-plus mr-1"></i>
-                    <a href="{{ route('decorative_product_admin.add') }}" class="buttons text-white"><span>Add Product</span></a>
+                    <a href="{{ route('decorative_product_admin.add') }}" class="buttons text-white" style="text-decoration:none;"><span>Add Product</span></a>
                 </span>
             </button>
         </div>
@@ -23,11 +23,11 @@
 @section('content')
 <div class="row">
     <div class="col-12">
-        <div class="card">
+        <div class="premium-card">
             <div class="card-content">
-                <div class="card-body">
+                <div class="premium-card-body">
                     <div class="table-responsive">
-                        <table class="table table-striped table-bordered data-table w-100" id="decorative_products">
+                        <table class="table premium-table data-table w-100" id="decorative_products">
                             <thead>
                                 <tr>
                                     <th>ID</th>

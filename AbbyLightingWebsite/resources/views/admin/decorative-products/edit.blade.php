@@ -74,30 +74,48 @@
                             <label for="sort_order">Sort Order</label>
                             <input type="number" name="sort_order" class="form-control" value="{{ old('sort_order', $product->sort_order) }}">
                         </div>
-                        <div class="col-md-12 form-group">
+                        <div class="col-md-6 form-group">
                             <label for="primary_image">Primary Image</label>
-                            <div class="custom-file-upload">
-                                <span>Click to Upload Primary Image</span>
-                                <input type="file" name="primary_image" accept="image/*" onchange="previewImage(this, 'primary-image-preview')">
+                            <div class="custom-file-upload" style="{{ $product->primaryImage ? 'display: none;' : '' }}">
+                                <i class="ft-upload-cloud custom-file-upload-icon"></i>
+                                <span class="custom-file-upload-text">Choose a file Or Drag and Drop it here (Primary Image)</span>
+                                <span class="custom-file-upload-subtext">PNG, JPEG, up to 12Mb</span>
+                                <input type="file" name="primary_image" accept="image/*" onchange="previewImage(this, 'primary-image-preview', 'primary')">
                             </div>
                             <div class="mt-2" id="primary-image-preview" style="{{ $product->primaryImage ? 'display: block;' : 'display: none;' }}">
                                 @if($product->primaryImage)
-                                <div class="img-preview-box"><img src="{{ asset('uploads/decorative_products/'.$product->primaryImage->image) }}"></div>
+                                <div class="img-preview-box">
+                                    <div class="img-preview-badge primary"><i class="fa fa-star"></i> Primary</div>
+                                    <img src="{{ asset('uploads/decorative_products/'.$product->primaryImage->image) }}" onclick="openLightbox(this.src)">
+                                    <button type="button" class="remove-image-btn" onclick="
+                                        document.getElementById('primary-image-preview').style.display='none';
+                                        $(this).closest('.form-group').find('.custom-file-upload').show();
+                                    "><i class="ft-x"></i></button>
+                                </div>
                                 @else
                                 <div class="img-preview-box"><img src=""></div>
                                 @endif
                             </div>
                         </div>
 
-                        <div class="col-md-12 form-group">
+                        <div class="col-md-6 form-group">
                             <label for="light_on_image">Light On Image</label>
-                            <div class="custom-file-upload">
-                                <span>Click to Upload Light On Image</span>
-                                <input type="file" name="light_on_image" accept="image/*" onchange="previewImage(this, 'light-on-image-preview')">
+                            <div class="custom-file-upload" style="{{ $product->lightOnImage ? 'display: none;' : '' }}">
+                                <i class="ft-upload-cloud custom-file-upload-icon"></i>
+                                <span class="custom-file-upload-text">Choose a file Or Drag and Drop it here (Light On Image)</span>
+                                <span class="custom-file-upload-subtext">PNG, JPEG, up to 12Mb</span>
+                                <input type="file" name="light_on_image" accept="image/*" onchange="previewImage(this, 'light-on-image-preview', 'light_on')">
                             </div>
                             <div class="mt-2" id="light-on-image-preview" style="{{ $product->lightOnImage ? 'display: block;' : 'display: none;' }}">
                                 @if($product->lightOnImage)
-                                <div class="img-preview-box"><img src="{{ asset('uploads/decorative_products/'.$product->lightOnImage->image) }}"></div>
+                                <div class="img-preview-box">
+                                    <div class="img-preview-badge light-on"><i class="fa fa-lightbulb-o"></i> Light On</div>
+                                    <img src="{{ asset('uploads/decorative_products/'.$product->lightOnImage->image) }}" onclick="openLightbox(this.src)">
+                                    <button type="button" class="remove-image-btn" onclick="
+                                        document.getElementById('light-on-image-preview').style.display='none';
+                                        $(this).closest('.form-group').find('.custom-file-upload').show();
+                                    "><i class="ft-x"></i></button>
+                                </div>
                                 @else
                                 <div class="img-preview-box"><img src=""></div>
                                 @endif
@@ -107,18 +125,20 @@
                         <div class="col-md-12 form-group">
                             <label for="gallery_images">Add Gallery Images</label>
                             <div class="custom-file-upload">
-                                <span>Click to Upload Gallery Images</span>
+                                <i class="ft-upload-cloud custom-file-upload-icon"></i>
+                                <span class="custom-file-upload-text">Choose files Or Drag and Drop them here (Gallery Images)</span>
+                                <span class="custom-file-upload-subtext">PNG, JPEG, up to 12Mb (Multiple)</span>
                                 <input type="file" name="gallery_images[]" accept="image/*" multiple onchange="previewGalleryImages(this, 'gallery-images-preview')">
                             </div>
-                            <div class="mt-2 d-flex flex-wrap gap-2" id="gallery-images-preview"></div>
+                            <div class="mt-2 d-flex flex-wrap gap-3" id="gallery-images-preview"></div>
                             @if($product->galleryImages && $product->galleryImages->count() > 0)
-                            <div class="mt-2 d-flex flex-wrap gap-2">
+                            <div class="mt-2 d-flex flex-wrap gap-3">
                                 @foreach($product->galleryImages as $galImg)
-                                    <div class="img-preview-box" style="position: relative;">
-                                        <img src="{{ asset('uploads/decorative_products/' . $galImg->image) }}">
-                                        <label class="gallery-delete-overlay" title="Mark for deletion">
-                                            <input type="checkbox" name="delete_gallery[]" value="{{ $galImg->id }}">
-                                            <span class="delete-icon">&times;</span>
+                                    <div class="img-preview-box">
+                                        <img src="{{ asset('uploads/decorative_products/' . $galImg->image) }}" onclick="openLightbox(this.src)">
+                                        <label class="remove-image-btn mb-0" style="cursor: pointer;" title="Delete this image">
+                                            <input type="checkbox" name="delete_gallery[]" value="{{ $galImg->id }}" class="d-none" onchange="$(this).closest('.img-preview-box').hide();">
+                                            <i class="ft-x"></i>
                                         </label>
                                     </div>
                                 @endforeach
@@ -128,27 +148,24 @@
                     </div>
 
                     <!-- Product Attributes -->
-                    <div class="row mt-4">
-                        <div class="col-12">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h5>Product Attributes</h5>
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-md-4">
-                                    <select id="global-attribute-select" class="form-control">
-                                        <option value="">Select an attribute...</option>
-                                        @if(isset($global_attributes))
-                                            @foreach($global_attributes as $attr)
-                                                <option value="{{ $attr->id }}" data-name="{{ $attr->name }}" data-values="{{ json_encode($attr->values) }}">{{ $attr->name }}</option>
-                                            @endforeach
-                                        @endif
-                                    </select>
-                                </div>
-                                <div class="col-md-2">
-                                    <button type="button" class="btn btn-info" id="add-product-attribute">Add</button>
-                                </div>
-                            </div>
-                            <div id="product-attributes-container">
+                    <div class="premium-section mt-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3 pb-2" style="border-bottom: 1px solid #e2e8f0;">
+                            <h5 class="font-weight-bold text-dark mb-0"><i class="ft-list mr-2 text-primary"></i>Product Attributes</h5>
+                        </div>
+                        <div class="d-flex align-items-center mb-4" style="gap: 15px; max-width: 500px;">
+                            <select id="global-attribute-select" class="form-control">
+                                <option value="">Select an attribute...</option>
+                                @if(isset($global_attributes))
+                                    @foreach($global_attributes as $attr)
+                                        <option value="{{ $attr->id }}" data-name="{{ $attr->name }}" data-values="{{ json_encode($attr->values) }}">{{ $attr->name }}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+                            <button type="button" class="btn btn-primary" id="add-product-attribute" style="white-space: nowrap;">
+                                <i class="ft-plus"></i> Add Attribute
+                            </button>
+                        </div>
+                        <div id="product-attributes-container">
                                 @foreach($product->attributes as $aIndex => $prodAttr)
                                 <div class="prod-attr-block" data-attr-id="{{ $prodAttr->attribute_id }}" data-attr-name="{{ $prodAttr->attribute ? $prodAttr->attribute->name : '' }}">
                                     <div class="row">
@@ -162,7 +179,7 @@
                                         </div>
                                         <div class="col-md-7">
                                             <label>Select Values</label>
-                                            <select name="product_attributes[{{ $aIndex }}][values][]" class="form-control attr-values-select select2" multiple required data-placeholder="Select values">
+                                            <select name="product_attributes[{{ $aIndex }}][values][]" class="form-control attr-values-select select2" multiple data-placeholder="Select values">
                                                 @if($prodAttr->attribute && $prodAttr->attribute->values)
                                                     @foreach($prodAttr->attribute->values as $val)
                                                         <option value="{{ $val->id }}" {{ $prodAttr->values->contains('decorative_attribute_value_id', $val->id) ? 'selected' : '' }}>{{ $val->name }}</option>
@@ -176,26 +193,32 @@
                                     </div>
                                 </div>
                                 @endforeach
-                            </div>
                         </div>
                     </div>
 
                     <!-- Product Variations -->
-                    <div class="row mt-4">
-                        <div class="col-12">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h5>Product Variations</h5>
-                                <div>
-                                    <button type="button" class="btn btn-sm btn-warning" id="generate-variations">Generate Variations</button>
-                                    <button type="button" class="btn btn-sm btn-success" id="add-variation">Add Manually</button>
-                                </div>
+                    <div class="premium-section mt-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4 pb-2" style="border-bottom: 1px solid #e2e8f0;">
+                            <h5 class="font-weight-bold text-dark mb-0"><i class="ft-layers mr-2 text-primary"></i>Product Variations</h5>
+                            <div>
+                                <button type="button" class="btn btn-warning mr-2" id="generate-variations">
+                                    <i class="ft-shuffle"></i> Generate Variations
+                                </button>
+                                <button type="button" class="btn btn-success" id="add-variation">
+                                    <i class="ft-plus"></i> Add Manually
+                                </button>
                             </div>
-                            <div id="product-variations-container">
+                        </div>
+                        <div id="product-variations-container">
                                 @foreach($product->variations as $vIndex => $variation)
-                                <div class="variation-block" data-var-index="{{ $vIndex }}">
-                                    <div class="row align-items-center">
-                                        <div class="col-md-2">
-                                            <strong>
+                                <div class="variation-block position-relative" data-var-index="{{ $vIndex }}">
+                                    <button type="button" class="btn btn-sm btn-danger remove-var position-absolute" style="top: 15px; right: 15px; z-index: 10; border-radius: 50%; width: 30px; height: 30px; padding: 0; display: flex; align-items: center; justify-content: center;" title="Remove Variation">
+                                        <i class="ft-x"></i>
+                                    </button>
+                                    
+                                    <div class="row align-items-center mb-3">
+                                        <div class="col-md-12 mb-3">
+                                            <h6 class="font-weight-bold text-primary mb-0">
                                                 @php
                                                     $varNameParts = [];
                                                     foreach($variation->attributeValues as $varAttrVal) {
@@ -203,58 +226,66 @@
                                                     }
                                                     echo implode(' - ', $varNameParts);
                                                 @endphp
-                                            </strong>
+                                            </h6>
                                             <input type="hidden" name="variations[{{ $vIndex }}][existing_id]" value="{{ $variation->id }}">
                                             @foreach($variation->attributeValues as $varAttrVal)
                                                 <input type="hidden" name="variations[{{ $vIndex }}][attributes][]" value="{{ $varAttrVal->id }}">
                                             @endforeach
                                         </div>
-                                        <div class="col-md-2">
+                                        <div class="col-md-6">
                                             <label>SKU (Optional)</label>
-                                            <input type="text" name="variations[{{ $vIndex }}][sku]" class="form-control form-control-sm" placeholder="SKU" value="{{ $variation->sku }}">
+                                            <input type="text" name="variations[{{ $vIndex }}][sku]" class="form-control" placeholder="SKU" value="{{ $variation->sku }}">
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-6">
+                                            <label>Status</label>
+                                            <select name="variations[{{ $vIndex }}][status]" class="form-control">
+                                                <option value="active" {{ $variation->status == 'active' ? 'selected' : '' }}>Active</option>
+                                                <option value="inactive" {{ $variation->status == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
                                             <label>Primary Image</label>
-                                            <div class="custom-file-upload">
-                                                <span>Click to Upload Image</span>
+                                            <div class="custom-file-upload" style="{{ $variation->image ? 'display: none;' : '' }}">
+                                                <i class="ft-upload-cloud custom-file-upload-icon"></i>
+                                                <span class="custom-file-upload-text">Choose a file Or Drag and Drop it here</span>
+                                                <span class="custom-file-upload-subtext">PNG, JPEG, up to 12Mb</span>
                                                 <input type="file" name="variations[{{ $vIndex }}][image]" accept="image/*" onchange="previewImage(this, 'var-img-preview-exist-{{ $vIndex }}')">
                                             </div>
-                                            <div class="mt-1" id="var-img-preview-exist-{{ $vIndex }}" style="{{ $variation->image ? 'display: block;' : 'display: none;' }}">
+                                            <div class="mt-2" id="var-img-preview-exist-{{ $vIndex }}" style="{{ $variation->image ? 'display: block;' : 'display: none;' }}">
                                                 <div class="img-preview-box">
-                                                    <img src="{{ $variation->image ? asset('uploads/decorative_products/'.$variation->image) : '' }}">
+                                                    <img src="{{ $variation->image ? asset('uploads/decorative_products/'.$variation->image) : '' }}" onclick="openLightbox(this.src)">
+                                                    <button type="button" class="remove-image-btn" onclick="
+                                                        document.getElementById('var-img-preview-exist-{{ $vIndex }}').style.display='none';
+                                                        $(this).closest('.form-group').find('.custom-file-upload').show();
+                                                    "><i class="ft-x"></i></button>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-6">
                                             <label>Gallery Images</label>
                                             <div class="custom-file-upload">
-                                                <span>Click to Upload Gallery</span>
+                                                <i class="ft-upload-cloud custom-file-upload-icon"></i>
+                                                <span class="custom-file-upload-text">Choose files Or Drag and Drop them here</span>
+                                                <span class="custom-file-upload-subtext">PNG, JPEG, up to 12Mb</span>
                                                 <input type="file" name="variations[{{ $vIndex }}][gallery_images][]" accept="image/*" multiple onchange="previewGalleryImages(this, 'var-gal-preview-exist-{{ $vIndex }}')">
                                             </div>
-                                            <div class="mt-1 d-flex flex-wrap gap-1" id="var-gal-preview-exist-{{ $vIndex }}"></div>
+                                            <div class="mt-2 d-flex flex-wrap gap-3" id="var-gal-preview-exist-{{ $vIndex }}"></div>
                                             @if($variation->galleryImages && $variation->galleryImages->count() > 0)
-                                                <div class="mt-1 d-flex flex-wrap gap-1">
+                                                <div class="mt-2 d-flex flex-wrap gap-3">
                                                     @foreach($variation->galleryImages as $galImg)
-                                                        <div class="img-preview-box" style="position: relative;">
-                                                            <img src="{{ asset('uploads/decorative_products/' . $galImg->image) }}">
-                                                            <label class="gallery-delete-overlay" title="Mark for deletion">
-                                                                <input type="checkbox" name="delete_var_gallery[{{ $vIndex }}][]" value="{{ $galImg->id }}">
-                                                                <span class="delete-icon">&times;</span>
+                                                        <div class="img-preview-box">
+                                                            <img src="{{ asset('uploads/decorative_products/' . $galImg->image) }}" onclick="openLightbox(this.src)">
+                                                            <label class="remove-image-btn mb-0" style="cursor: pointer;" title="Delete this image">
+                                                                <input type="checkbox" name="delete_var_gallery[{{ $vIndex }}][]" value="{{ $galImg->id }}" class="d-none" onchange="$(this).closest('.img-preview-box').hide();">
+                                                                <i class="ft-x"></i>
                                                             </label>
                                                         </div>
                                                     @endforeach
                                                 </div>
                                             @endif
-                                        </div>
-                                        <div class="col-md-1">
-                                            <label>Status</label>
-                                            <select name="variations[{{ $vIndex }}][status]" class="form-control form-control-sm">
-                                                <option value="active" {{ $variation->status == 'active' ? 'selected' : '' }}>Active</option>
-                                                <option value="inactive" {{ $variation->status == 'inactive' ? 'selected' : '' }}>Inactive</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-1 text-right">
-                                            <button type="button" class="btn btn-sm btn-danger remove-var w-100">X</button>
                                         </div>
                                     </div>
                                         <!-- Specification Sections for this variation -->
@@ -308,7 +339,11 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary mt-3">Update Product</button>
+                    <div class="mt-4 pt-4 text-right" style="border-top: 1px solid #e2e8f0;">
+                        <button type="submit" class="btn btn-premium btn-lg" style="padding: 0.75rem 2rem; font-size: 1.1rem;">
+                            <i class="ft-check-square mr-2"></i> Update Product
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -368,7 +403,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                     <div class="col-md-7">
                         <label>Select Values</label>
-                        <select name="product_attributes[${attrIndex}][values][]" class="form-control attr-values-select select2" multiple required data-placeholder="Select values">
+                        <select name="product_attributes[${attrIndex}][values][]" class="form-control attr-values-select select2" multiple data-placeholder="Select values">
                             ${optionsHtml}
                         </select>
                     </div>
@@ -496,49 +531,57 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             // 3. No match, create a brand new block
-            let comboIdsHtml = '';
+            let attrHiddenInputs = '';
             combo.forEach(val => {
-                comboIdsHtml += `<input type="hidden" name="variations[${varIndex}][attributes][]" value="${val.id}">`;
+                attrHiddenInputs += `<input type="hidden" name="variations[${varIndex}][attributes][]" value="${val.id}">`;
             });
 
-            const varHtml = `
-                <div class="variation-block" data-var-index="${varIndex}">
-                    <div class="row align-items-center">
-                        <div class="col-md-2">
-                            <strong>${comboName}</strong>
-                            ${comboIdsHtml}
+            const html = `
+                <div class="variation-block position-relative" data-var-index="${varIndex}">
+                    <button type="button" class="btn btn-sm btn-danger remove-var position-absolute" style="top: 15px; right: 15px; z-index: 10; border-radius: 50%; width: 30px; height: 30px; padding: 0; display: flex; align-items: center; justify-content: center;" title="Remove Variation">
+                        <i class="ft-x"></i>
+                    </button>
+                    
+                    <div class="row align-items-center mb-3">
+                        <div class="col-md-12 mb-3">
+                            <h6 class="font-weight-bold text-primary mb-0">${comboName}</h6>
+                            ${attrHiddenInputs}
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-6">
                             <label>SKU (Optional)</label>
-                            <input type="text" name="variations[${varIndex}][sku]" class="form-control form-control-sm" placeholder="SKU" value="${suggestedSku}">
+                            <input type="text" name="variations[${varIndex}][sku]" class="form-control" placeholder="SKU" value="${suggestedSku}">
                         </div>
-                        <div class="col-md-3">
-                            <label>Primary Image</label>
-                            <div class="custom-file-upload">
-                                <span>Click to Upload Image</span>
-                                <input type="file" name="variations[${varIndex}][image]" accept="image/*" onchange="previewImage(this, 'var-img-preview-${varIndex}')">
-                            </div>
-                            <div class="mt-1" id="var-img-preview-${varIndex}" style="display: none;">
-                                <div class="img-preview-box"><img src=""></div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <label>Gallery Images</label>
-                            <div class="custom-file-upload">
-                                <span>Click to Upload Gallery</span>
-                                <input type="file" name="variations[${varIndex}][gallery_images][]" accept="image/*" multiple onchange="previewGalleryImages(this, 'var-gal-preview-${varIndex}')">
-                            </div>
-                            <div class="mt-1 d-flex flex-wrap gap-1" id="var-gal-preview-${varIndex}"></div>
-                        </div>
-                        <div class="col-md-1">
+                        <div class="col-md-6">
                             <label>Status</label>
-                            <select name="variations[${varIndex}][status]" class="form-control form-control-sm">
+                            <select name="variations[${varIndex}][status]" class="form-control">
                                 <option value="active">Active</option>
                                 <option value="inactive">Inactive</option>
                             </select>
                         </div>
-                        <div class="col-md-1 text-right">
-                            <button type="button" class="btn btn-sm btn-danger remove-var w-100">X</button>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label>Primary Image</label>
+                            <div class="custom-file-upload">
+                                <i class="ft-upload-cloud custom-file-upload-icon"></i>
+                                <span class="custom-file-upload-text">Choose a file Or Drag and Drop it here</span>
+                                <span class="custom-file-upload-subtext">PNG, JPEG, up to 12Mb</span>
+                                <input type="file" name="variations[${varIndex}][image]" accept="image/*" onchange="previewImage(this, 'var-img-preview-${varIndex}')">
+                            </div>
+                            <div class="mt-2 d-flex flex-wrap gap-3" id="var-img-preview-${varIndex}" style="display: none;">
+                                <div class="img-preview-box"><img src=""></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label>Gallery Images</label>
+                            <div class="custom-file-upload">
+                                <i class="ft-upload-cloud custom-file-upload-icon"></i>
+                                <span class="custom-file-upload-text">Choose files Or Drag and Drop them here</span>
+                                <span class="custom-file-upload-subtext">PNG, JPEG, up to 12Mb</span>
+                                <input type="file" name="variations[${varIndex}][gallery_images][]" accept="image/*" multiple onchange="previewGalleryImages(this, 'var-gal-preview-${varIndex}')">
+                            </div>
+                            <div class="mt-2 d-flex flex-wrap gap-3" id="var-gal-preview-${varIndex}"></div>
                         </div>
                     </div>
                     <!-- Specification Sections for this variation -->
@@ -551,7 +594,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 </div>
             `;
-            container.insertAdjacentHTML('beforeend', varHtml);
+            container.insertAdjacentHTML('beforeend', html);
             varIndex++;
         });
     });
@@ -641,18 +684,36 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 
-function previewImage(input, previewId) {
+function previewImage(input, previewId, badgeType = null) {
     const previewContainer = document.getElementById(previewId);
     if (input.files && input.files[0]) {
         const reader = new FileReader();
         reader.onload = function(e) {
-            previewContainer.innerHTML = `<div class="img-preview-box"><img src="${e.target.result}"></div>`;
+            let badgeHtml = '';
+            if (badgeType === 'primary') badgeHtml = '<div class="img-preview-badge primary"><i class="fa fa-star"></i> Primary</div>';
+            else if (badgeType === 'light_on') badgeHtml = '<div class="img-preview-badge light-on"><i class="fa fa-lightbulb-o"></i> Light On</div>';
+            else if (previewId.includes('primary')) badgeHtml = '<div class="img-preview-badge primary"><i class="fa fa-star"></i> Primary</div>';
+            else if (previewId.includes('light')) badgeHtml = '<div class="img-preview-badge light-on"><i class="fa fa-lightbulb-o"></i> Light On</div>';
+
+            previewContainer.innerHTML = `
+                <div class="img-preview-box">
+                    ${badgeHtml}
+                    <img src="${e.target.result}" onclick="openLightbox(this.src)">
+                    <button type="button" class="remove-image-btn" onclick="
+                        $(this).closest('.form-group').find('input[type=file]').val('');
+                        document.getElementById('${previewId}').style.display='none';
+                        $(this).closest('.form-group').find('.custom-file-upload').show();
+                    "><i class="ft-x"></i></button>
+                </div>
+            `;
             previewContainer.style.display = 'block';
+            $(input).closest('.custom-file-upload').hide();
         }
         reader.readAsDataURL(input.files[0]);
     } else {
         previewContainer.style.display = 'none';
         previewContainer.innerHTML = '';
+        $(input).closest('.custom-file-upload').show();
     }
 }
 
@@ -660,19 +721,49 @@ function previewGalleryImages(input, previewContainerId) {
     const container = document.getElementById(previewContainerId);
     container.innerHTML = ''; // clear existing previews
     if (input.files) {
-        Array.from(input.files).forEach(file => {
+        Array.from(input.files).forEach((file, index) => {
             const reader = new FileReader();
             reader.onload = function(e) {
                 const div = document.createElement('div');
                 div.className = 'img-preview-box';
-                const img = document.createElement('img');
-                img.src = e.target.result;
-                div.appendChild(img);
+                div.innerHTML = `
+                    <img src="${e.target.result}" onclick="openLightbox(this.src)">
+                    <button type="button" class="remove-image-btn" onclick="
+                        $(this).closest('.form-group').find('input[type=file]').val('');
+                        document.getElementById('${previewContainerId}').innerHTML='';
+                        $(this).closest('.form-group').find('.custom-file-upload').show();
+                    "><i class="ft-x"></i></button>
+                `;
                 container.appendChild(div);
             }
             reader.readAsDataURL(file);
         });
+        $(input).closest('.custom-file-upload').hide();
     }
+}
+
+// Lightbox logic
+function openLightbox(src) {
+    let modal = document.getElementById('imageLightbox');
+    if (!modal) {
+        document.body.insertAdjacentHTML('beforeend', `
+            <div class="modal fade" id="imageLightbox" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                    <div class="modal-content bg-transparent border-0">
+                        <div class="modal-body text-center position-relative">
+                            <button type="button" class="close text-white position-absolute" data-dismiss="modal" aria-label="Close" style="top: -20px; right: -20px; font-size: 2rem; opacity: 1;">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <img id="lightboxImg" src="" class="img-fluid rounded shadow-lg" style="max-height: 85vh;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `);
+        modal = document.getElementById('imageLightbox');
+    }
+    document.getElementById('lightboxImg').src = src;
+    $(modal).modal('show');
 }
 </script>
 @stop

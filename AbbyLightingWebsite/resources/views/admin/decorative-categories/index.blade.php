@@ -7,7 +7,7 @@
     <div class="col-12">
         <div class="my-3 d-flex justify-content-between align-items-center">
             <h4>{{ $title }}</h4>
-            <a href="{{ route('decorative_category_admin.add') }}" class="btn btn-primary">Add Category</a>
+            <a href="{{ route('decorative_category_admin.add') }}" class="btn btn-premium">Add Category</a>
         </div>
         @if(session('success'))
             <div class="alert alert-success mt-2">{{ session('success') }}</div>
@@ -19,10 +19,10 @@
 @section('content')
 <div class="row">
     <div class="col-12">
-        <div class="card">
-            <div class="card-body">
+        <div class="premium-card">
+            <div class="premium-card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped" id="categories-table">
+                    <table class="table premium-table" id="categories-table">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -49,9 +49,9 @@
                                 <td>{{ $category->parent ? $category->parent->name : '-' }}</td>
                                 <td>
                                     @if($category->status == 'active')
-                                        <span class="badge badge-success">Active</span>
+                                        <span class="badge badge-premium-active">Active</span>
                                     @else
-                                        <span class="badge badge-danger">Inactive</span>
+                                        <span class="badge badge-premium-inactive">Inactive</span>
                                     @endif
                                 </td>
                                 <td>{{ $category->sort_order }}</td>

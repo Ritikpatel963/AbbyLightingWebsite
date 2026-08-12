@@ -101,13 +101,13 @@
     border-radius: 4px;
     padding: 4px;
     background: #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     display: inline-block;
-    max-height: 60px;
+    max-height: 150px;
 }
 
 .img-preview-box img {
-    max-height: 50px;
+    max-height: 140px;
     border-radius: 2px;
 }
 
@@ -136,9 +136,10 @@
 }
 
 .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
-    color: rgba(255,255,255,0.8) !important;
+    color: rgba(255, 255, 255, 0.8) !important;
     margin-right: 5px !important;
 }
+
 .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
     color: #fff !important;
     background: transparent !important;
@@ -149,7 +150,7 @@
     background: #fff;
     border-radius: 6px;
     border: 1px solid #e2e8f0;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
     padding: 1rem;
     margin-bottom: 1rem;
 }
@@ -210,7 +211,7 @@
     border-left: 4px solid var(--accent-color);
     border-radius: 6px;
     padding: 1rem;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
     margin-bottom: 1rem;
     transition: transform 0.2s;
 }
@@ -225,6 +226,7 @@
     border: 1px solid var(--premium-border);
     padding: 0.5rem 0.75rem;
 }
+
 .form-control:focus {
     border-color: var(--accent-color);
     box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
@@ -243,14 +245,17 @@ label {
     font-weight: 500;
     transition: all 0.2s;
 }
+
 .btn-sm {
     padding: 0.35rem 0.75rem;
     font-size: 0.875rem;
 }
+
 .btn-primary {
     background-color: var(--accent-color);
     border-color: var(--accent-color);
 }
+
 .btn-primary:hover {
     background-color: #2563eb;
     border-color: #2563eb;
@@ -276,7 +281,7 @@ label {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     transition: all 0.2s ease;
     z-index: 10;
 }
@@ -304,9 +309,10 @@ label {
 }
 
 /* When the hidden checkbox inside the overlay is checked, change icon to undo arrow or leave as is */
-.gallery-delete-overlay input[type="checkbox"]:checked ~ span.delete-icon {
-    content: "↺"; 
+.gallery-delete-overlay input[type="checkbox"]:checked~span.delete-icon {
+    content: "↺";
 }
+
 .gallery-delete-overlay input[type="checkbox"]:checked {
     /* We can style the parent or adjacent image using :has if supported, but a simpler way is just to leave it checked. Let's make the background red permanently when checked */
 }

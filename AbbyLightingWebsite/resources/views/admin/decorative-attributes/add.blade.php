@@ -17,8 +17,8 @@
 @section('content')
 <div class="row">
     <div class="col-12">
-        <div class="card shadow-sm border-0 rounded-lg">
-            <div class="p-4">
+        <div class="premium-card">
+            <div class="premium-card-body">
                 <form action="{{ $action }}" method="POST">
                     @csrf
 
@@ -40,7 +40,7 @@
                     </div>
 
                     <hr class="mt-4 mb-4">
-                    <button type="submit" class="btn btn-premium btn-primary"><i class="ft-save mr-1"></i> Save Attribute</button>
+                    <button type="submit" class="btn btn-premium"><i class="ft-save mr-1"></i> Save Attribute</button>
                 </form>
             </div>
         </div>

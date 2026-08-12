@@ -16,8 +16,8 @@
 @section('content')
 <div class="row">
     <div class="col-12">
-        <div class="card">
-            <div class="card-body">
+        <div class="premium-card">
+            <div class="premium-card-body">
                 @if ($errors->any())
                     <div class="alert alert-danger">
                         <ul class="mb-0">
@@ -66,7 +66,7 @@
                             </div>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary mt-3">Update Category</button>
+                    <button type="submit" class="btn btn-premium mt-3">Update Category</button>
                 </form>
             </div>
         </div>

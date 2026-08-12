@@ -45,6 +45,7 @@
         <link rel="stylesheet" type="text/css" href="{{asset('adminlte/css/style.css')}}">
         <link rel="stylesheet" href="https://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" />
         <!-- END: Custom CSS-->
+        <link rel="stylesheet" type="text/css" href="{{asset('adminlte/css/premium-admin.css')}}">
         @yield('extra_css')
     </head>
     <body class="vertical-layout vertical-menu 2-columns navbar-sticky menu-expanded page-scrolled pace-done" data-menu="vertical-menu" data-col="2-columns">
